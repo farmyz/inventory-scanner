@@ -4,128 +4,415 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>StockRoom Inventory</title>
+
+<title>StockRoom Pro | Inventory Management</title>
 
 <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
 
 <style>
+:root {
+  --navy: #0f172a;
+  --blue: #2563eb;
+  --light: #f1f5f9;
+  --border: #e2e8f0;
+  --text: #1e293b;
+  --muted: #64748b;
+  --green: #16a34a;
+  --red: #dc2626;
+}
+
 * {
   box-sizing: border-box;
 }
 
 body {
+  margin: 0;
+  background: var(--light);
   font-family: Arial, sans-serif;
-  margin: 0;
-  background: #f1f5f9;
-  color: #172033;
+  color: var(--text);
 }
 
-header {
-  background: #111827;
-  color: white;
-  padding: 22px;
-  text-align: center;
-}
-
-header h1 {
-  margin: 0;
-}
-
-header p {
-  color: #cbd5e1;
-}
-
-main {
-  max-width: 900px;
-  margin: 25px auto;
-  padding: 15px;
-}
-
-.card {
-  background: white;
-  padding: 22px;
-  margin-bottom: 20px;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px #00000010;
-}
-
-input, select, button {
-  width: 100%;
-  padding: 13px;
-  margin: 7px 0;
-  border-radius: 7px;
-  font-size: 16px;
-}
-
-input, select {
-  border: 1px solid #cbd5e1;
+button, input, select {
+  font-family: inherit;
+  font-size: 14px;
 }
 
 button {
-  background: #2563eb;
-  color: white;
-  border: none;
-  font-weight: bold;
   cursor: pointer;
 }
 
-button:hover {
-  background: #1d4ed8;
+.sidebar {
+  width: 245px;
+  background: var(--navy);
+  color: white;
+  height: 100vh;
+  position: fixed;
+  left: 0;
+  top: 0;
+  padding: 25px 15px;
 }
 
-.secondary {
-  background: #334155;
+.brand {
+  font-size: 25px;
+  font-weight: 800;
+  margin-bottom: 35px;
+  padding-left: 12px;
+}
+
+.brand span {
+  color: #60a5fa;
+}
+
+.nav {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 15px;
+  border: none;
+  background: transparent;
+  color: #cbd5e1;
+  border-radius: 8px;
+  margin-bottom: 5px;
+}
+
+.nav:hover, .nav.active {
+  background: #1e40af;
+  color: white;
+}
+
+.main {
+  margin-left: 245px;
+  padding: 30px;
+  max-width: 1600px;
+}
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+  gap: 15px;
+}
+
+.topbar h1 {
+  margin: 0;
+  font-size: 27px;
+}
+
+.subtitle {
+  color: var(--muted);
+  margin-top: 8px;
+}
+
+.connection {
+  padding: 9px 13px;
+  border-radius: 20px;
+  background: #fee2e2;
+  color: #991b1b;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.connection.online {
+  background: #dcfce7;
+  color: #166534;
 }
 
 .stats {
-  display: flex;
-  gap: 12px;
-  margin-bottom: 20px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+  margin-bottom: 25px;
 }
 
 .stat {
   background: white;
-  padding: 20px;
-  flex: 1;
-  text-align: center;
-  border-radius: 10px;
+  padding: 22px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
 }
 
-.stat strong {
-  display: block;
-  font-size: 25px;
-  color: #2563eb;
+.stat label {
+  color: var(--muted);
+  font-size: 13px;
 }
 
-#reader {
+.stat h2 {
+  font-size: 30px;
+  margin: 15px 0 0;
+}
+
+.panel {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 25px;
+  margin-bottom: 20px;
+}
+
+.panel h2 {
+  margin-top: 0;
+  font-size: 20px;
+}
+
+.panel p {
+  color: var(--muted);
+}
+
+input, select {
   width: 100%;
+  padding: 13px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  margin: 8px 0 17px;
+  background: white;
+}
+
+input:focus, select:focus {
+  border-color: var(--blue);
+  outline: none;
+}
+
+label {
+  font-size: 13px;
+  font-weight: bold;
+}
+
+.btn {
+  border: none;
+  border-radius: 8px;
+  padding: 13px 18px;
+  background: var(--blue);
+  color: white;
+  font-weight: bold;
+}
+
+.btn:hover {
+  filter: brightness(0.92);
+}
+
+.btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.btn.secondary {
+  background: #334155;
+}
+
+.btn.green {
+  background: var(--green);
+}
+
+.btn.red {
+  background: var(--red);
+}
+
+.btn.gray {
+  background: #e2e8f0;
+  color: #334155;
+}
+
+.btn.full {
+  width: 100%;
+  margin-top: 8px;
+}
+
+.flex {
+  display: flex;
+  gap: 12px;
+}
+
+.flex > * {
+  flex: 1;
+  min-width: 0;
+}
+
+.grid2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.page {
+  display: none;
+}
+
+.page.active {
+  display: block;
+}
+
+.tablewrap {
+  overflow-x: auto;
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
-}
-
-th, td {
-  padding: 12px;
   text-align: left;
-  border-bottom: 1px solid #e2e8f0;
 }
 
 th {
   background: #f8fafc;
+  padding: 15px;
+  color: #475569;
+  font-size: 13px;
 }
 
-.table-box {
-  overflow-x: auto;
+td {
+  padding: 15px;
+  border-bottom: 1px solid var(--border);
+  font-size: 14px;
 }
 
-#message {
+.status {
+  padding: 6px 10px;
+  border-radius: 20px;
+  font-size: 12px;
   font-weight: bold;
 }
 
-@media(max-width: 600px) {
+.status.good {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.status.low {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.status.out {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+#reader {
+  width: 100%;
+  max-width: 500px;
+  margin: 15px auto;
+}
+
+.barcode-preview {
+  background: #f8fafc;
+  border: 1px dashed #94a3b8;
+  padding: 25px;
+  text-align: center;
+  border-radius: 10px;
+  overflow-x: auto;
+}
+
+.barcode-preview canvas {
+  max-width: 100%;
+  height: auto;
+  background: white;
+}
+
+.message {
+  padding: 15px;
+  border-radius: 8px;
+  background: #dbeafe;
+  color: #1e40af;
+  margin-bottom: 20px;
+  display: none;
+}
+
+.message.error {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: #0009;
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.modal.show {
+  display: flex;
+}
+
+.modal-content {
+  background: white;
+  padding: 28px;
+  border-radius: 15px;
+  max-width: 480px;
+  width: 100%;
+  text-align: center;
+}
+
+.modal-content canvas {
+  max-width: 100%;
+  height: auto;
+}
+
+.small {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+@media(max-width: 1000px) {
   .stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .grid2 {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media(max-width: 750px) {
+  .sidebar {
+    position: static;
+    width: 100%;
+    height: auto;
+    padding: 15px;
+  }
+
+  .brand {
+    margin-bottom: 12px;
+  }
+
+  .nav {
+    display: inline-block;
+    width: auto;
+    padding: 10px;
+    font-size: 12px;
+  }
+
+  .main {
+    margin-left: 0;
+    padding: 15px;
+  }
+
+  .topbar {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .stats {
+    gap: 10px;
+  }
+
+  .stat {
+    padding: 15px;
+  }
+
+  .stat h2 {
+    font-size: 23px;
+  }
+
+  .panel {
+    padding: 17px;
+  }
+
+  .flex {
     flex-direction: column;
   }
 }
@@ -134,162 +421,550 @@ th {
 
 <body>
 
-<header>
-  <h1>StockRoom</h1>
-  <p>Inventory Management System</p>
-</header>
+<aside class="sidebar">
 
-<main>
-
-<div class="stats">
-  <div class="stat">
-    <strong id="productsCount">0</strong>
-    Products
+  <div class="brand">
+    StockRoom <span>Pro</span>
   </div>
 
-  <div class="stat">
-    <strong id="totalStock">0</strong>
-    Total Items
-  </div>
-</div>
-
-<div class="card">
-  <h2>Connect Google Sheets</h2>
-
-  <input
-    id="apiUrl"
-    placeholder="Paste Google Apps Script Web App URL"
-  >
-
-  <button onclick="connect()">
-    Connect Spreadsheet
-  </button>
-</div>
-
-<div class="card">
-  <h2>Scan Barcode</h2>
-
-  <div id="reader"></div>
-
-  <button onclick="startScanner()">
-    Open Camera
+  <button class="nav active"
+    onclick="showPage('dashboard', this)">
+    Dashboard
   </button>
 
-  <button class="secondary" onclick="stopScanner()">
-    Stop Camera
+  <button class="nav"
+    onclick="showPage('inventory', this)">
+    Inventory
   </button>
 
-  <p>Or enter barcode manually:</p>
-
-  <input
-    id="barcode"
-    placeholder="Barcode number"
-  >
-
-  <p id="productInfo">No product selected</p>
-
-  <h3>Update Inventory</h3>
-
-  <select id="action">
-    <option value="add">Add Inventory (+)</option>
-    <option value="remove">Remove Inventory (-)</option>
-  </select>
-
-  <input
-    id="quantity"
-    type="number"
-    min="1"
-    value="1"
-  >
-
-  <button onclick="updateInventory()">
-    Update Inventory
+  <button class="nav"
+    onclick="showPage('scanner', this)">
+    Barcode Scanner
   </button>
-</div>
 
-<div class="card">
-  <h2>Register New Product</h2>
-
-  <input
-    id="newBarcode"
-    placeholder="Product barcode"
-  >
-
-  <input
-    id="newName"
-    placeholder="Product name"
-  >
-
-  <input
-    id="newQuantity"
-    type="number"
-    min="0"
-    value="0"
-  >
-
-  <button onclick="registerProduct()">
+  <button class="nav"
+    onclick="showPage('products', this)">
     Add Product
   </button>
-</div>
 
-<div class="card">
-  <h2>Current Inventory</h2>
-
-  <input
-    id="search"
-    placeholder="Search inventory"
-    oninput="showInventory()"
-  >
-
-  <button onclick="loadInventory()">
-    Refresh Inventory
+  <button class="nav"
+    onclick="showPage('barcodes', this)">
+    Barcode Generator
   </button>
 
-  <div class="table-box">
-    <table>
-      <thead>
-        <tr>
-          <th>Barcode</th>
-          <th>Product</th>
-          <th>Quantity</th>
-        </tr>
-      </thead>
+  <button class="nav"
+    onclick="showPage('settings', this)">
+    Settings
+  </button>
 
-      <tbody id="inventoryTable"></tbody>
-    </table>
+</aside>
+
+<main class="main">
+
+<div class="topbar">
+  <div>
+    <h1 id="pageTitle">Dashboard</h1>
+    <div class="subtitle">
+      Inventory management and barcode tracking
+    </div>
+  </div>
+
+  <div id="connection" class="connection">
+    Not Connected
   </div>
 </div>
 
-<div class="card">
-  <p id="message">Ready to connect.</p>
-</div>
+<div id="message" class="message"></div>
+
+<!-- DASHBOARD -->
+
+<section id="dashboard" class="page active">
+
+  <div class="stats">
+
+    <div class="stat">
+      <label>Total Products</label>
+      <h2 id="totalProducts">0</h2>
+    </div>
+
+    <div class="stat">
+      <label>Total Stock</label>
+      <h2 id="totalStock">0</h2>
+    </div>
+
+    <div class="stat">
+      <label>Low Stock</label>
+      <h2 id="lowStock">0</h2>
+    </div>
+
+    <div class="stat">
+      <label>Out of Stock</label>
+      <h2 id="outStock">0</h2>
+    </div>
+
+  </div>
+
+  <div class="grid2">
+
+    <div class="panel">
+      <h2>Quick Actions</h2>
+      <p>Manage your inventory.</p>
+
+      <button class="btn full"
+        onclick="navigate('scanner')">
+        Scan Barcode
+      </button>
+
+      <button class="btn green full"
+        onclick="navigate('products')">
+        Register New Product
+      </button>
+
+      <button class="btn secondary full"
+        onclick="navigate('inventory')">
+        View All Inventory
+      </button>
+    </div>
+
+    <div class="panel">
+      <h2>Inventory Alerts</h2>
+      <div id="alerts">
+        Connect Google Sheets to see alerts.
+      </div>
+    </div>
+
+  </div>
+
+  <div class="panel">
+    <h2>Inventory Overview</h2>
+
+    <div class="tablewrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Barcode</th>
+            <th>Product</th>
+            <th>Quantity</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="dashboardTable"></tbody>
+      </table>
+    </div>
+  </div>
+
+</section>
+
+<!-- INVENTORY -->
+
+<section id="inventory" class="page">
+
+  <div class="panel">
+
+    <h2>Product Inventory</h2>
+    <p>Search and monitor all registered products.</p>
+
+    <input
+      id="searchInventory"
+      placeholder="Search by name or barcode"
+      oninput="renderInventory()"
+    >
+
+    <button class="btn" onclick="loadInventory()">
+      Refresh Google Sheets
+    </button>
+
+    <div class="tablewrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Barcode</th>
+            <th>Product</th>
+            <th>Quantity</th>
+            <th>Status</th>
+            <th>Manage</th>
+          </tr>
+        </thead>
+        <tbody id="inventoryTable"></tbody>
+      </table>
+    </div>
+
+  </div>
+
+</section>
+
+<!-- SCANNER -->
+
+<section id="scanner" class="page">
+
+  <div class="grid2">
+
+    <div class="panel">
+      <h2>Camera Barcode Scanner</h2>
+      <p>
+        Point your camera at a printed barcode.
+      </p>
+
+      <div id="reader"></div>
+
+      <button class="btn full" onclick="startScanner()">
+        Open Camera
+      </button>
+
+      <button class="btn gray full" onclick="stopScanner()">
+        Stop Camera
+      </button>
+
+      <p class="small">
+        Camera access requires HTTPS and browser permission.
+      </p>
+    </div>
+
+    <div class="panel">
+
+      <h2>Update Inventory</h2>
+
+      <label>Scanned Barcode</label>
+      <input
+        id="scanBarcode"
+        placeholder="Scan or type barcode"
+        oninput="findScannedProduct()"
+      >
+
+      <div id="scannedInfo">
+        No product selected.
+      </div>
+
+      <br>
+
+      <label>Action</label>
+      <select id="stockAction">
+        <option value="add">Add Stock (+)</option>
+        <option value="remove">Remove Stock (-)</option>
+      </select>
+
+      <label>Quantity</label>
+      <input
+        id="stockQuantity"
+        type="number"
+        min="1"
+        step="1"
+        value="1"
+      >
+
+      <button class="btn green full"
+        onclick="updateInventory()">
+        Save Inventory Change
+      </button>
+
+    </div>
+
+  </div>
+
+</section>
+
+<!-- ADD PRODUCT -->
+
+<section id="products" class="page">
+
+  <div class="grid2">
+
+    <div class="panel">
+
+      <h2>Register New Product</h2>
+
+      <p>
+        Create a new product and its barcode.
+      </p>
+
+      <label>Product Name</label>
+      <input
+        id="newName"
+        placeholder="Example: Blue T-Shirt"
+      >
+
+      <label>Starting Quantity</label>
+      <input
+        id="newQuantity"
+        type="number"
+        min="0"
+        step="1"
+        value="0"
+      >
+
+      <label>Product Barcode</label>
+      <input
+        id="newBarcode"
+        placeholder="Generate or enter barcode"
+        oninput="previewNewBarcode()"
+      >
+
+      <button class="btn secondary full"
+        onclick="generateNewBarcode()">
+        Generate Barcode Number
+      </button>
+
+      <button class="btn green full"
+        onclick="registerProduct()">
+        Save Product & Download Barcode
+      </button>
+
+    </div>
+
+    <div class="panel">
+
+      <h2>Barcode Preview</h2>
+
+      <p>
+        This is the label you can print and scan.
+      </p>
+
+      <div class="barcode-preview">
+        <canvas id="newBarcodeCanvas"></canvas>
+      </div>
+
+      <button class="btn full"
+        onclick="downloadNewBarcode()">
+        Download Barcode PNG
+      </button>
+
+    </div>
+
+  </div>
+
+</section>
+
+<!-- BARCODE GENERATOR -->
+
+<section id="barcodes" class="page">
+
+  <div class="panel">
+
+    <h2>Barcode Generator</h2>
+
+    <p>
+      Generate or download labels for existing products.
+    </p>
+
+    <label>Select Product</label>
+
+    <select id="barcodeSelect"
+      onchange="previewExistingBarcode()">
+      <option value="">Select a product</option>
+    </select>
+
+    <div class="barcode-preview">
+      <canvas id="existingBarcodeCanvas"></canvas>
+    </div>
+
+    <br>
+
+    <button class="btn green"
+      onclick="downloadExistingBarcode()">
+      Download Barcode PNG
+    </button>
+
+    <button class="btn secondary"
+      onclick="printExistingBarcode()">
+      Print Barcode
+    </button>
+
+  </div>
+
+</section>
+
+<!-- SETTINGS -->
+
+<section id="settings" class="page">
+
+  <div class="panel">
+
+    <h2>Google Sheets Connection</h2>
+
+    <p>
+      Connect your Google Apps Script deployment.
+    </p>
+
+    <label>Apps Script Web App URL</label>
+    <input
+      id="apiUrl"
+      placeholder="https://script.google.com/.../exec"
+    >
+
+    <button class="btn" onclick="connect()">
+      Connect Google Sheets
+    </button>
+
+    <button class="btn secondary"
+      onclick="loadInventory()">
+      Test Connection
+    </button>
+
+  </div>
+
+  <div class="panel">
+
+    <h2>Inventory Preferences</h2>
+
+    <label>Low Stock Warning Level</label>
+
+    <input
+      id="lowStockLevel"
+      type="number"
+      min="1"
+      step="1"
+      value="5"
+      onchange="savePreferences()"
+    >
+
+    <p class="small">
+      Products with quantities at or below this number
+      will show a low-stock warning.
+    </p>
+
+  </div>
+
+</section>
 
 </main>
 
+<!-- DOWNLOAD MODAL -->
+
+<div id="downloadModal" class="modal">
+
+  <div class="modal-content">
+
+    <h2>Product Created!</h2>
+
+    <p>
+      Your product was added to Google Sheets.
+      Download the barcode and print it to scan later.
+    </p>
+
+    <canvas id="modalBarcodeCanvas"></canvas>
+
+    <br><br>
+
+    <button class="btn green full"
+      onclick="downloadModalBarcode()">
+      Download Barcode PNG
+    </button>
+
+    <button class="btn secondary full"
+      onclick="printModalBarcode()">
+      Print Barcode
+    </button>
+
+    <button class="btn gray full"
+      onclick="closeModal()">
+      Done
+    </button>
+
+  </div>
+
+</div>
+
 <script>
+// =======================================
+// STOCKROOM PRO
+// GOOGLE SHEETS INVENTORY SYSTEM
+// =======================================
+
 let API = localStorage.getItem("stockroom_api") || "";
 let products = [];
 let scanner = null;
+let scanning = false;
+let busy = false;
+let latestBarcode = "";
+let latestName = "";
+
+let lowLevel =
+  Number(localStorage.getItem("stockroom_low")) || 5;
 
 document.getElementById("apiUrl").value = API;
+document.getElementById("lowStockLevel").value = lowLevel;
 
-function notify(text) {
-  document.getElementById("message").textContent = text;
+// =======================================
+// NAVIGATION
+// =======================================
+
+function showPage(id, button) {
+  document.querySelectorAll(".page").forEach(page => {
+    page.classList.remove("active");
+  });
+
+  document.getElementById(id).classList.add("active");
+
+  document.querySelectorAll(".nav").forEach(nav => {
+    nav.classList.remove("active");
+  });
+
+  if (button) button.classList.add("active");
+
+  const titles = {
+    dashboard: "Dashboard",
+    inventory: "Inventory",
+    scanner: "Barcode Scanner",
+    products: "Register Product",
+    barcodes: "Barcode Generator",
+    settings: "Settings"
+  };
+
+  document.getElementById("pageTitle").textContent = titles[id];
+
+  if (id !== "scanner") stopScanner();
 }
 
-  function connect() {
-  API = document.getElementById("apiUrl").value.trim();
+function navigate(id) {
+  const button = [...document.querySelectorAll(".nav")]
+    .find(b => b.getAttribute("onclick").includes("'" + id + "'"));
+
+  showPage(id, button);
+}
+
+// =======================================
+// MESSAGES
+// =======================================
+
+function notify(message, error = false) {
+  const box = document.getElementById("message");
+
+  box.style.display = "block";
+  box.textContent = message;
+  box.className = error ? "message error" : "message";
+}
+
+function setConnection(online) {
+  const badge = document.getElementById("connection");
+
+  badge.textContent = online
+    ? "Google Sheets Connected"
+    : "Not Connected";
+
+  badge.classList.toggle("online", online);
+}
+
+// =======================================
+// GOOGLE SHEETS API
+// =======================================
+
+function connect() {
+  const url = document.getElementById("apiUrl").value.trim();
 
   if (
-    !API.startsWith("https://script.google.com/") ||
-    !API.includes("/exec")
+    !url.startsWith("https://script.google.com/") ||
+    !url.endsWith("/exec")
   ) {
-    notify("Enter a valid Google Apps Script URL.");
+    notify("Enter a valid Apps Script Web App URL.", true);
     return;
   }
 
+  API = url;
+
   localStorage.setItem("stockroom_api", API);
+
   notify("Connecting to Google Sheets...");
+
   loadInventory();
 }
 
@@ -300,42 +975,47 @@ function request(params) {
       return;
     }
 
-    const id = "cb_" + Date.now() + "_" +
+    const callback =
+      "stockroom_" + Date.now() + "_" +
       Math.random().toString(36).slice(2);
 
     const script = document.createElement("script");
 
-    const timer = setTimeout(() => {
-      cleanup();
-      reject(new Error("Connection timed out"));
-    }, 15000);
+    let finished = false;
 
-    function cleanup() {
-      clearTimeout(timer);
-      delete window[id];
+    const timeout = setTimeout(() => {
+      finish(new Error("Google Sheets connection timed out."));
+    }, 20000);
+
+    function finish(error, data) {
+      if (finished) return;
+
+      finished = true;
+      clearTimeout(timeout);
+      delete window[callback];
       script.remove();
+
+      if (error) reject(error);
+      else resolve(data);
     }
 
-    window[id] = data => {
-      cleanup();
-
-      if (data.success) {
-        resolve(data);
+    window[callback] = data => {
+      if (data && data.success) {
+        finish(null, data);
       } else {
-        reject(new Error(data.error || "Request failed"));
+        finish(new Error(data?.error || "Request failed."));
       }
     };
 
     const query = new URLSearchParams({
       ...params,
-      callback: id
+      callback
     });
 
     script.src = API + "?" + query.toString();
 
     script.onerror = () => {
-      cleanup();
-      reject(new Error("Cannot reach Google Sheets"));
+      finish(new Error("Cannot reach Google Sheets."));
     };
 
     document.head.appendChild(script);
@@ -344,164 +1024,759 @@ function request(params) {
 
 async function loadInventory() {
   try {
-    const data = await request({ action: "list" });
-    products = data.products;
-    showInventory();
-    notify("Inventory loaded.");
+    notify("Loading inventory...");
+
+    const result = await request({
+      action: "list"
+    });
+
+    products = result.products || [];
+
+    renderAll();
+    setConnection(true);
+
+    notify("Inventory successfully synced with Google Sheets.");
   } catch (error) {
-    notify(error.message);
+    setConnection(false);
+    notify(error.message, true);
   }
 }
 
-function showInventory() {
-  const table = document.getElementById("inventoryTable");
-  const search = document.getElementById("search")
-    .value.toLowerCase();
+// =======================================
+// DASHBOARD
+// =======================================
 
-  table.replaceChildren();
+function getStatus(quantity) {
+  if (quantity <= 0) {
+    return {
+      text: "Out of Stock",
+      type: "out"
+    };
+  }
 
-  let total = 0;
+  if (quantity <= lowLevel) {
+    return {
+      text: "Low Stock",
+      type: "low"
+    };
+  }
 
-  products.forEach(p => {
-    total += p.quantity;
+  return {
+    text: "In Stock",
+    type: "good"
+  };
+}
+
+function createCell(row, value) {
+  const cell = document.createElement("td");
+  cell.textContent = value;
+  row.appendChild(cell);
+  return cell;
+}
+
+function createStatusCell(row, quantity) {
+  const cell = document.createElement("td");
+  const status = getStatus(quantity);
+  const badge = document.createElement("span");
+
+  badge.className = "status " + status.type;
+  badge.textContent = status.text;
+
+  cell.appendChild(badge);
+  row.appendChild(cell);
+}
+
+function renderDashboard() {
+  let totalStock = 0;
+  let lowStock = 0;
+  let outStock = 0;
+
+  products.forEach(product => {
+    totalStock += product.quantity;
+
+    if (product.quantity === 0) {
+      outStock++;
+    } else if (product.quantity <= lowLevel) {
+      lowStock++;
+    }
   });
 
-  document.getElementById("productsCount").textContent =
+  document.getElementById("totalProducts").textContent =
     products.length;
 
-  document.getElementById("totalStock").textContent = total;
+  document.getElementById("totalStock").textContent =
+    totalStock;
+
+  document.getElementById("lowStock").textContent =
+    lowStock;
+
+  document.getElementById("outStock").textContent =
+    outStock;
+
+  const table = document.getElementById("dashboardTable");
+  table.replaceChildren();
+
+  products.slice(0, 10).forEach(product => {
+    const row = document.createElement("tr");
+
+    createCell(row, product.barcode);
+    createCell(row, product.name);
+    createCell(row, product.quantity);
+    createStatusCell(row, product.quantity);
+
+    table.appendChild(row);
+  });
+
+  const alerts = document.getElementById("alerts");
+  alerts.replaceChildren();
+
+  const warningProducts = products.filter(
+    p => p.quantity <= lowLevel
+  );
+
+  if (warningProducts.length === 0) {
+    const p = document.createElement("p");
+    p.textContent = "All products have sufficient stock.";
+    alerts.appendChild(p);
+  } else {
+    warningProducts.forEach(product => {
+      const p = document.createElement("p");
+      p.textContent =
+        product.name + " — " + product.quantity + " remaining";
+      alerts.appendChild(p);
+    });
+  }
+}
+
+// =======================================
+// INVENTORY TABLE
+// =======================================
+
+function renderInventory() {
+  const query = document
+    .getElementById("searchInventory")
+    .value.toLowerCase();
+
+  const table = document.getElementById("inventoryTable");
+  table.replaceChildren();
 
   products
-    .filter(p =>
-      p.name.toLowerCase().includes(search) ||
-      p.barcode.includes(search)
+    .filter(product =>
+      product.name.toLowerCase().includes(query) ||
+      product.barcode.toLowerCase().includes(query)
     )
-    .forEach(p => {
+    .forEach(product => {
       const row = document.createElement("tr");
 
-      [p.barcode, p.name, p.quantity].forEach(value => {
-        const cell = document.createElement("td");
-        cell.textContent = value;
-        row.appendChild(cell);
-      });
+      createCell(row, product.barcode);
+      createCell(row, product.name);
+      createCell(row, product.quantity);
+      createStatusCell(row, product.quantity);
 
+      const cell = document.createElement("td");
+      const button = document.createElement("button");
+
+      button.textContent = "Manage";
+      button.className = "btn";
+
+      button.onclick = () => {
+        navigate("scanner");
+
+        document.getElementById("scanBarcode").value =
+          product.barcode;
+
+        findScannedProduct();
+      };
+
+      cell.appendChild(button);
+      row.appendChild(cell);
       table.appendChild(row);
     });
-
-  showSelectedProduct();
 }
 
-function showSelectedProduct() {
-  const barcode = document.getElementById("barcode").value.trim();
-  const item = products.find(p => p.barcode === barcode);
-
-  document.getElementById("productInfo").textContent = item
-    ? item.name + " — " + item.quantity + " in stock"
-    : barcode
-      ? "Product not found"
-      : "No product selected";
-}
-
-document.getElementById("barcode")
-  .addEventListener("input", showSelectedProduct);
-
-async function registerProduct() {
-  const barcode = document.getElementById("newBarcode").value.trim();
-  const name = document.getElementById("newName").value.trim();
-  const quantity = document.getElementById("newQuantity").value;
-
-  if (!barcode || !name) {
-    notify("Enter a barcode and product name.");
-    return;
-  }
-
-  try {
-    const data = await request({
-      action: "register",
-      barcode,
-      name,
-      quantity
-    });
-
-    products = data.products;
-    showInventory();
-    notify("Product registered successfully!");
-  } catch (error) {
-    notify(error.message);
-  }
-}
-
-async function updateInventory() {
-  const barcode = document.getElementById("barcode").value.trim();
-  const quantity = document.getElementById("quantity").value;
-  const mode = document.getElementById("action").value;
-
-  if (!barcode) {
-    notify("Scan a barcode first.");
-    return;
-  }
-
-  try {
-    const data = await request({
-      action: "update",
-      barcode,
-      quantity,
-      mode
-    });
-
-    products = data.products;
-    showInventory();
-    notify("Inventory updated in Google Sheets!");
-  } catch (error) {
-    notify(error.message);
-  }
-}
+// =======================================
+// CAMERA SCANNER
+// =======================================
 
 async function startScanner() {
-  if (scanner) return;
+  if (scanner || scanning) return;
 
   if (typeof Html5Qrcode === "undefined") {
-    notify("Scanner library could not load.");
+    notify("Barcode scanner library did not load.", true);
     return;
   }
 
   try {
+    scanning = true;
+
     scanner = new Html5Qrcode("reader");
 
     await scanner.start(
       { facingMode: "environment" },
       {
         fps: 10,
-        qrbox: { width: 250, height: 150 }
+        qrbox: {
+          width: 250,
+          height: 150
+        }
       },
-      async decodedText => {
-        document.getElementById("barcode").value = decodedText;
-        showSelectedProduct();
-        notify("Barcode scanned!");
-        await stopScanner();
+      decodedText => {
+        document.getElementById("scanBarcode").value =
+          decodedText;
+
+        findScannedProduct();
+
+        notify("Barcode scanned: " + decodedText);
+
+        stopScanner();
       },
       () => {}
     );
+
+    notify("Camera started. Scan a barcode.");
   } catch (error) {
-    notify("Camera error: " + error.message);
+    notify("Camera error: " + error.message, true);
     scanner = null;
+  } finally {
+    scanning = false;
   }
 }
 
 async function stopScanner() {
   if (!scanner) return;
 
-  try {
-    await scanner.stop();
-    scanner.clear();
-  } catch (error) {}
-
+  const current = scanner;
   scanner = null;
+
+  try {
+    if (current.isScanning) {
+      await current.stop();
+    }
+
+    current.clear();
+  } catch (error) {
+    console.log(error);
+  }
 }
+
+function findScannedProduct() {
+  const barcode =
+    document.getElementById("scanBarcode").value.trim();
+
+  const product = products.find(
+    p => p.barcode === barcode
+  );
+
+  document.getElementById("scannedInfo").textContent =
+    product
+      ? product.name + " — " + product.quantity + " in stock"
+      : barcode
+        ? "Product not found."
+        : "No product selected.";
+}
+
+// =======================================
+// ADD OR REMOVE STOCK
+// =======================================
+
+async function updateInventory() {
+  if (busy) return;
+
+  const barcode =
+    document.getElementById("scanBarcode").value.trim();
+
+  const quantity = Number(
+    document.getElementById("stockQuantity").value
+  );
+
+  const mode =
+    document.getElementById("stockAction").value;
+
+  if (!barcode) {
+    notify("Scan or enter a barcode first.", true);
+    return;
+  }
+
+  if (!Number.isSafeInteger(quantity) || quantity <= 0) {
+    notify("Enter a valid quantity.", true);
+    return;
+  }
+
+  const product = products.find(
+    p => p.barcode === barcode
+  );
+
+  if (!product) {
+    notify("This product is not registered.", true);
+    return;
+  }
+
+  if (mode === "remove" && quantity > product.quantity) {
+    notify("Not enough stock available.", true);
+    return;
+  }
+
+  busy = true;
+
+  try {
+    const result = await request({
+      action: "update",
+      barcode,
+      quantity,
+      mode
+    });
+
+    products = result.products;
+
+    renderAll();
+
+    notify(
+      "Success! " + quantity +
+      (mode === "add" ? " items added." : " items removed.") +
+      " Google Sheets updated."
+    );
+  } catch (error) {
+    notify(error.message, true);
+  } finally {
+    busy = false;
+  }
+}
+
+// =======================================
+// BARCODE GENERATION
+// =======================================
+
+function createBarcodeNumber() {
+  // Unique internal Code128 barcode identifier.
+  // Not an official UPC/EAN retail number.
+  return "SR" +
+    Date.now().toString() +
+    Math.floor(Math.random() * 1000000)
+      .toString().padStart(6, "0");
+}
+
+function generateNewBarcode() {
+  let barcode;
+
+  do {
+    barcode = createBarcodeNumber();
+  } while (products.some(p => p.barcode === barcode));
+
+  document.getElementById("newBarcode").value =
+    barcode;
+
+  previewNewBarcode();
+}
+
+function drawBarcode(canvasId, barcode, name = "") {
+  const canvas = document.getElementById(canvasId);
+
+  if (!barcode) {
+    const ctx = canvas.getContext("2d");
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    return false;
+  }
+
+  if (typeof JsBarcode === "undefined") {
+    notify("Barcode generator library did not load.", true);
+    return false;
+  }
+
+  try {
+    JsBarcode(canvas, barcode, {
+      format: "CODE128",
+      displayValue: true,
+      fontSize: 16,
+      height: 85,
+      width: 2,
+      margin: 15,
+      background: "#ffffff",
+      lineColor: "#000000"
+    });
+
+    return true;
+  } catch (error) {
+    notify("Invalid barcode: " + error.message, true);
+    return false;
+  }
+}
+
+function previewNewBarcode() {
+  const barcode =
+    document.getElementById("newBarcode").value.trim();
+
+  const name =
+    document.getElementById("newName").value.trim();
+
+  drawBarcode("newBarcodeCanvas", barcode, name);
+}
+
+document.getElementById("newName")
+  .addEventListener("input", previewNewBarcode);
+
+// =======================================
+// PRODUCT REGISTRATION
+// =======================================
+
+async function registerProduct() {
+  if (busy) return;
+
+  const name =
+    document.getElementById("newName").value.trim();
+
+  const quantity = Number(
+    document.getElementById("newQuantity").value
+  );
+
+  let barcode =
+    document.getElementById("newBarcode").value.trim();
+
+  if (!name) {
+    notify("Enter a product name.", true);
+    return;
+  }
+
+  if (!Number.isSafeInteger(quantity) || quantity < 0) {
+    notify("Enter a valid starting quantity.", true);
+    return;
+  }
+
+  if (!barcode) {
+    generateNewBarcode();
+
+    barcode =
+      document.getElementById("newBarcode").value.trim();
+  }
+
+  if (products.some(p => p.barcode === barcode)) {
+    notify("This barcode is already registered.", true);
+    return;
+  }
+
+  if (!drawBarcode("newBarcodeCanvas", barcode, name)) {
+    return;
+  }
+
+  busy = true;
+
+  try {
+    const result = await request({
+      action: "register",
+      barcode,
+      name,
+      quantity
+    });
+
+    products = result.products;
+
+    renderAll();
+
+    latestBarcode = barcode;
+    latestName = name;
+
+    drawBarcode(
+      "modalBarcodeCanvas",
+      barcode,
+      name
+    );
+
+    document.getElementById("downloadModal")
+      .classList.add("show");
+
+    document.getElementById("newName").value = "";
+    document.getElementById("newQuantity").value = "0";
+    document.getElementById("newBarcode").value = "";
+
+    notify(
+      "Product successfully saved to Google Sheets!"
+    );
+  } catch (error) {
+    notify(error.message, true);
+  } finally {
+    busy = false;
+  }
+}
+
+// =======================================
+// DOWNLOAD BARCODE PNG
+// =======================================
+
+function makeLabelCanvas(barcode, name) {
+  const canvas = document.createElement("canvas");
+
+  canvas.width = 800;
+  canvas.height = 360;
+
+  const ctx = canvas.getContext("2d");
+
+  ctx.fillStyle = "#ffffff";
+  ctx.fillRect(0, 0, 800, 360);
+
+  ctx.fillStyle = "#111827";
+  ctx.textAlign = "center";
+  ctx.font = "bold 26px Arial";
+
+  ctx.fillText(name || "Inventory Product", 400, 45, 760);
+
+  const barcodeCanvas = document.createElement("canvas");
+
+  JsBarcode(barcodeCanvas, barcode, {
+    format: "CODE128",
+    displayValue: true,
+    fontSize: 18,
+    width: 2,
+    height: 110,
+    margin: 15
+  });
+
+  const availableWidth = 740;
+  const scale = Math.min(
+    1,
+    availableWidth / barcodeCanvas.width
+  );
+
+  const drawWidth = barcodeCanvas.width * scale;
+  const drawHeight = barcodeCanvas.height * scale;
+
+  ctx.drawImage(
+    barcodeCanvas,
+    (800 - drawWidth) / 2,
+    85,
+    drawWidth,
+    drawHeight
+  );
+
+  ctx.font = "16px Arial";
+  ctx.fillStyle = "#64748b";
+  ctx.fillText("STOCKROOM PRO INVENTORY", 400, 315);
+
+  return canvas;
+}
+
+function downloadBarcode(barcode, name) {
+  if (!barcode) {
+    notify("Select or generate a barcode first.", true);
+    return;
+  }
+
+  try {
+    const canvas = makeLabelCanvas(barcode, name);
+
+    const link = document.createElement("a");
+
+    link.download =
+      "StockRoom-" +
+      barcode.replace(/[^a-zA-Z0-9_-]/g, "_") +
+      ".png";
+
+    link.href = canvas.toDataURL("image/png");
+
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+
+    notify("Barcode PNG download started.");
+  } catch (error) {
+    notify("Download failed: " + error.message, true);
+  }
+}
+
+function downloadNewBarcode() {
+  const barcode =
+    document.getElementById("newBarcode").value.trim();
+
+  const name =
+    document.getElementById("newName").value.trim();
+
+  downloadBarcode(barcode, name);
+}
+
+function downloadModalBarcode() {
+  downloadBarcode(latestBarcode, latestName);
+}
+
+// =======================================
+// EXISTING BARCODE LABELS
+// =======================================
+
+function populateBarcodeSelect() {
+  const select =
+    document.getElementById("barcodeSelect");
+
+  const selected = select.value;
+
+  select.replaceChildren();
+
+  const first = document.createElement("option");
+  first.value = "";
+  first.textContent = "Select a product";
+  select.appendChild(first);
+
+  products.forEach(product => {
+    const option = document.createElement("option");
+
+    option.value = product.barcode;
+    option.textContent = product.name;
+
+    select.appendChild(option);
+  });
+
+  if (products.some(p => p.barcode === selected)) {
+    select.value = selected;
+  }
+
+  previewExistingBarcode();
+}
+
+function previewExistingBarcode() {
+  const barcode =
+    document.getElementById("barcodeSelect").value;
+
+  const product = products.find(
+    p => p.barcode === barcode
+  );
+
+  drawBarcode(
+    "existingBarcodeCanvas",
+    barcode,
+    product?.name || ""
+  );
+}
+
+function downloadExistingBarcode() {
+  const barcode =
+    document.getElementById("barcodeSelect").value;
+
+  const product = products.find(
+    p => p.barcode === barcode
+  );
+
+  if (!product) {
+    notify("Select a product first.", true);
+    return;
+  }
+
+  downloadBarcode(product.barcode, product.name);
+}
+
+// =======================================
+// PRINT BARCODE
+// =======================================
+
+function printBarcode(barcode, name) {
+  if (!barcode) {
+    notify("Select a barcode first.", true);
+    return;
+  }
+
+  const canvas = makeLabelCanvas(barcode, name);
+  const image = canvas.toDataURL("image/png");
+
+  const popup = window.open("", "_blank");
+
+  if (!popup) {
+    notify("Allow pop-ups to print the barcode.", true);
+    return;
+  }
+
+  popup.document.write(`
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>Print Barcode</title>
+      <style>
+        body {
+          text-align: center;
+          font-family: Arial;
+          padding: 20px;
+        }
+        img {
+          max-width: 100%;
+          width: 600px;
+        }
+      </style>
+    </head>
+    <body>
+      <img src="${image}" onload="window.print()">
+    </body>
+    </html>
+  `);
+
+  popup.document.close();
+}
+
+function printExistingBarcode() {
+  const barcode =
+    document.getElementById("barcodeSelect").value;
+
+  const product = products.find(
+    p => p.barcode === barcode
+  );
+
+  if (!product) {
+    notify("Select a product first.", true);
+    return;
+  }
+
+  printBarcode(product.barcode, product.name);
+}
+
+function printModalBarcode() {
+  printBarcode(latestBarcode, latestName);
+}
+
+function closeModal() {
+  document.getElementById("downloadModal")
+    .classList.remove("show");
+}
+
+// =======================================
+// SETTINGS
+// =======================================
+
+function savePreferences() {
+  const value = Number(
+    document.getElementById("lowStockLevel").value
+  );
+
+  if (!Number.isSafeInteger(value) || value < 1) {
+    notify("Enter a valid low-stock level.", true);
+    return;
+  }
+
+  lowLevel = value;
+
+  localStorage.setItem("stockroom_low", lowLevel);
+
+  renderAll();
+
+  notify("Inventory preferences saved.");
+}
+
+// =======================================
+// RENDER EVERYTHING
+// =======================================
+
+function renderAll() {
+  renderDashboard();
+  renderInventory();
+  populateBarcodeSelect();
+  findScannedProduct();
+}
+
+// =======================================
+// INITIALIZE
+// =======================================
+
+renderAll();
 
 if (API) {
   loadInventory();
+} else {
+  navigate("settings");
 }
+
 </script>
 
 </body>

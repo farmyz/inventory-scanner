@@ -277,13 +277,12 @@ function notify(text) {
   document.getElementById("message").textContent = text;
 }
 
-function connect() {
+  function connect() {
   API = document.getElementById("apiUrl").value.trim();
 
-  // Supports regular and school Google Apps Script URLs
   if (
     !API.startsWith("https://script.google.com/") ||
-    !API.endsWith("/exec")
+    !API.includes("/exec")
   ) {
     notify("Enter a valid Google Apps Script URL.");
     return;

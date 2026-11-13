@@ -1,0 +1,425 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>StockRoom Inventory</title>
+
+<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+
+<style>
+* { box-sizing: border-box; }
+
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  background: #f1f5f9;
+  color: #172033;
+}
+
+header {
+  background: #111827;
+  color: white;
+  padding: 22px;
+  text-align: center;
+}
+
+header h1 { margin: 0; }
+header p { color: #cbd5e1; }
+
+main {
+  max-width: 900px;
+  margin: 25px auto;
+  padding: 15px;
+}
+
+.card {
+  background: white;
+  padding: 22px;
+  margin-bottom: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px #00000010;
+}
+
+input, select, button {
+  width: 100%;
+  padding: 13px;
+  margin: 7px 0;
+  border-radius: 7px;
+  font-size: 16px;
+}
+
+input, select {
+  border: 1px solid #cbd5e1;
+}
+
+button {
+  background: #2563eb;
+  color: white;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+button:hover { background: #1d4ed8; }
+
+.secondary { background: #334155; }
+
+.stats {
+  display: flex;
+  gap: 12px;
+}
+
+.stat {
+  background: white;
+  padding: 20px;
+  flex: 1;
+  text-align: center;
+  border-radius: 10px;
+}
+
+.stat strong {
+  display: block;
+  font-size: 25px;
+  color: #2563eb;
+}
+
+#reader { width: 100%; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+th { background: #f8fafc; }
+
+.table-box { overflow-x: auto; }
+
+#message { font-weight: bold; }
+
+@media(max-width: 600px) {
+  .stats { flex-direction: column; }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>StockRoom</h1>
+  <p>Inventory Management System</p>
+</header>
+
+<main>
+
+<div class="stats">
+  <div class="stat">
+    <strong id="productsCount">0</strong>
+    Products
+  </div>
+  <div class="stat">
+    <strong id="totalStock">0</strong>
+    Total Items
+  </div>
+</div>
+
+<div class="card">
+  <h2>Connect Google Sheets</h2>
+  <input id="apiUrl" placeholder="Paste Apps Script Web App URL">
+  <button onclick="connect()">Connect Spreadsheet</button>
+</div>
+
+<div class="card">
+  <h2>Scan Barcode</h2>
+
+  <div id="reader"></div>
+
+  <button onclick="startScanner()">Open Camera</button>
+  <button class="secondary" onclick="stopScanner()">Stop Camera</button>
+
+  <p>Or enter barcode manually:</p>
+  <input id="barcode" placeholder="Barcode number">
+
+  <p id="productInfo">No product selected</p>
+
+  <h3>Update Inventory</h3>
+
+  <select id="action">
+    <option value="add">Add Inventory (+)</option>
+    <option value="remove">Remove Inventory (-)</option>
+  </select>
+
+  <input id="quantity" type="number" min="1" value="1">
+
+  <button onclick="updateInventory()">Update Inventory</button>
+</div>
+
+<div class="card">
+  <h2>Register New Product</h2>
+
+  <input id="newBarcode" placeholder="Product barcode">
+  <input id="newName" placeholder="Product name">
+  <input id="newQuantity" type="number" min="0" value="0">
+
+  <button onclick="registerProduct()">Add Product</button>
+</div>
+
+<div class="card">
+  <h2>Current Inventory</h2>
+
+  <input id="search" placeholder="Search inventory"
+         oninput="showInventory()">
+
+  <button onclick="loadInventory()">Refresh Inventory</button>
+
+  <div class="table-box">
+    <table>
+      <thead>
+        <tr>
+          <th>Barcode</th>
+          <th>Product</th>
+          <th>Quantity</th>
+        </tr>
+      </thead>
+      <tbody id="inventoryTable"></tbody>
+    </table>
+  </div>
+</div>
+
+<div class="card">
+  <p id="message">Ready to connect.</p>
+</div>
+
+</main>
+
+<script>
+let API = localStorage.getItem("stockroom_api") || "";
+let products = [];
+let scanner = null;
+
+document.getElementById("apiUrl").value = API;
+
+function notify(text) {
+  document.getElementById("message").textContent = text;
+}
+
+function connect() {
+  API = document.getElementById("apiUrl").value.trim();
+
+  if (!API.startsWith("https://script.google.com/macros/s/")) {
+    notify("Enter a valid Google Apps Script URL.");
+    return;
+  }
+
+  localStorage.setItem("stockroom_api", API);
+  loadInventory();
+}
+
+function request(params) {
+  return new Promise((resolve, reject) => {
+    if (!API) {
+      reject(new Error("Connect Google Sheets first."));
+      return;
+    }
+
+    const id = "cb_" + Date.now() + "_" +
+      Math.random().toString(36).slice(2);
+
+    const script = document.createElement("script");
+
+    const timer = setTimeout(() => {
+      cleanup();
+      reject(new Error("Connection timed out"));
+    }, 15000);
+
+    function cleanup() {
+      clearTimeout(timer);
+      delete window[id];
+      script.remove();
+    }
+
+    window[id] = data => {
+      cleanup();
+
+      if (data.success) resolve(data);
+      else reject(new Error(data.error || "Request failed"));
+    };
+
+    const query = new URLSearchParams({
+      ...params,
+      callback: id
+    });
+
+    script.src = API + "?" + query.toString();
+
+    script.onerror = () => {
+      cleanup();
+      reject(new Error("Cannot reach Google Sheets"));
+    };
+
+    document.head.appendChild(script);
+  });
+}
+
+async function loadInventory() {
+  try {
+    const data = await request({ action: "list" });
+    products = data.products;
+    showInventory();
+    notify("Inventory loaded.");
+  } catch (error) {
+    notify(error.message);
+  }
+}
+
+function showInventory() {
+  const table = document.getElementById("inventoryTable");
+  const search = document.getElementById("search")
+    .value.toLowerCase();
+
+  table.replaceChildren();
+
+  let total = 0;
+
+  products.forEach(p => total += p.quantity);
+
+  document.getElementById("productsCount").textContent =
+    products.length;
+
+  document.getElementById("totalStock").textContent = total;
+
+  products
+    .filter(p =>
+      p.name.toLowerCase().includes(search) ||
+      p.barcode.includes(search)
+    )
+    .forEach(p => {
+      const row = document.createElement("tr");
+
+      [p.barcode, p.name, p.quantity].forEach(value => {
+        const cell = document.createElement("td");
+        cell.textContent = value;
+        row.appendChild(cell);
+      });
+
+      table.appendChild(row);
+    });
+
+  showSelectedProduct();
+}
+
+function showSelectedProduct() {
+  const barcode = document.getElementById("barcode").value.trim();
+  const item = products.find(p => p.barcode === barcode);
+
+  document.getElementById("productInfo").textContent = item
+    ? item.name + " — " + item.quantity + " in stock"
+    : "Product not found";
+}
+
+document.getElementById("barcode")
+  .addEventListener("input", showSelectedProduct);
+
+async function registerProduct() {
+  const barcode = document.getElementById("newBarcode").value.trim();
+  const name = document.getElementById("newName").value.trim();
+  const quantity = document.getElementById("newQuantity").value;
+
+  if (!barcode || !name) {
+    notify("Enter a barcode and product name.");
+    return;
+  }
+
+  try {
+    const data = await request({
+      action: "register",
+      barcode,
+      name,
+      quantity
+    });
+
+    products = data.products;
+    showInventory();
+    notify("Product registered successfully!");
+  } catch (error) {
+    notify(error.message);
+  }
+}
+
+async function updateInventory() {
+  const barcode = document.getElementById("barcode").value.trim();
+  const quantity = document.getElementById("quantity").value;
+  const mode = document.getElementById("action").value;
+
+  if (!barcode) {
+    notify("Scan a barcode first.");
+    return;
+  }
+
+  try {
+    const data = await request({
+      action: "update",
+      barcode,
+      quantity,
+      mode
+    });
+
+    products = data.products;
+    showInventory();
+    notify("Inventory updated in Google Sheets!");
+  } catch (error) {
+    notify(error.message);
+  }
+}
+
+async function startScanner() {
+  if (scanner) return;
+
+  if (typeof Html5Qrcode === "undefined") {
+    notify("Scanner library could not load.");
+    return;
+  }
+
+  try {
+    scanner = new Html5Qrcode("reader");
+
+    await scanner.start(
+      { facingMode: "environment" },
+      { fps: 10, qrbox: { width: 250, height: 150 } },
+      async decodedText => {
+        document.getElementById("barcode").value = decodedText;
+        showSelectedProduct();
+        notify("Barcode scanned!");
+        await stopScanner();
+      },
+      () => {}
+    );
+  } catch (error) {
+    notify("Camera error: " + error.message);
+    scanner = null;
+  }
+}
+
+async function stopScanner() {
+  if (!scanner) return;
+
+  try {
+    await scanner.stop();
+    scanner.clear();
+  } catch (error) {}
+
+  scanner = null;
+}
+
+if (API) loadInventory();
+</script>
+
+</body>
+</html>

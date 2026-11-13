@@ -9,7 +9,9 @@
 <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 
 <style>
-* { box-sizing: border-box; }
+* {
+  box-sizing: border-box;
+}
 
 body {
   font-family: Arial, sans-serif;
@@ -25,8 +27,13 @@ header {
   text-align: center;
 }
 
-header h1 { margin: 0; }
-header p { color: #cbd5e1; }
+header h1 {
+  margin: 0;
+}
+
+header p {
+  color: #cbd5e1;
+}
 
 main {
   max-width: 900px;
@@ -62,13 +69,18 @@ button {
   cursor: pointer;
 }
 
-button:hover { background: #1d4ed8; }
+button:hover {
+  background: #1d4ed8;
+}
 
-.secondary { background: #334155; }
+.secondary {
+  background: #334155;
+}
 
 .stats {
   display: flex;
   gap: 12px;
+  margin-bottom: 20px;
 }
 
 .stat {
@@ -85,7 +97,9 @@ button:hover { background: #1d4ed8; }
   color: #2563eb;
 }
 
-#reader { width: 100%; }
+#reader {
+  width: 100%;
+}
 
 table {
   width: 100%;
@@ -98,14 +112,22 @@ th, td {
   border-bottom: 1px solid #e2e8f0;
 }
 
-th { background: #f8fafc; }
+th {
+  background: #f8fafc;
+}
 
-.table-box { overflow-x: auto; }
+.table-box {
+  overflow-x: auto;
+}
 
-#message { font-weight: bold; }
+#message {
+  font-weight: bold;
+}
 
 @media(max-width: 600px) {
-  .stats { flex-direction: column; }
+  .stats {
+    flex-direction: column;
+  }
 }
 </style>
 </head>
@@ -124,6 +146,7 @@ th { background: #f8fafc; }
     <strong id="productsCount">0</strong>
     Products
   </div>
+
   <div class="stat">
     <strong id="totalStock">0</strong>
     Total Items
@@ -132,8 +155,15 @@ th { background: #f8fafc; }
 
 <div class="card">
   <h2>Connect Google Sheets</h2>
-  <input id="apiUrl" placeholder="Paste Apps Script Web App URL">
-  <button onclick="connect()">Connect Spreadsheet</button>
+
+  <input
+    id="apiUrl"
+    placeholder="Paste Google Apps Script Web App URL"
+  >
+
+  <button onclick="connect()">
+    Connect Spreadsheet
+  </button>
 </div>
 
 <div class="card">
@@ -141,11 +171,20 @@ th { background: #f8fafc; }
 
   <div id="reader"></div>
 
-  <button onclick="startScanner()">Open Camera</button>
-  <button class="secondary" onclick="stopScanner()">Stop Camera</button>
+  <button onclick="startScanner()">
+    Open Camera
+  </button>
+
+  <button class="secondary" onclick="stopScanner()">
+    Stop Camera
+  </button>
 
   <p>Or enter barcode manually:</p>
-  <input id="barcode" placeholder="Barcode number">
+
+  <input
+    id="barcode"
+    placeholder="Barcode number"
+  >
 
   <p id="productInfo">No product selected</p>
 
@@ -156,28 +195,55 @@ th { background: #f8fafc; }
     <option value="remove">Remove Inventory (-)</option>
   </select>
 
-  <input id="quantity" type="number" min="1" value="1">
+  <input
+    id="quantity"
+    type="number"
+    min="1"
+    value="1"
+  >
 
-  <button onclick="updateInventory()">Update Inventory</button>
+  <button onclick="updateInventory()">
+    Update Inventory
+  </button>
 </div>
 
 <div class="card">
   <h2>Register New Product</h2>
 
-  <input id="newBarcode" placeholder="Product barcode">
-  <input id="newName" placeholder="Product name">
-  <input id="newQuantity" type="number" min="0" value="0">
+  <input
+    id="newBarcode"
+    placeholder="Product barcode"
+  >
 
-  <button onclick="registerProduct()">Add Product</button>
+  <input
+    id="newName"
+    placeholder="Product name"
+  >
+
+  <input
+    id="newQuantity"
+    type="number"
+    min="0"
+    value="0"
+  >
+
+  <button onclick="registerProduct()">
+    Add Product
+  </button>
 </div>
 
 <div class="card">
   <h2>Current Inventory</h2>
 
-  <input id="search" placeholder="Search inventory"
-         oninput="showInventory()">
+  <input
+    id="search"
+    placeholder="Search inventory"
+    oninput="showInventory()"
+  >
 
-  <button onclick="loadInventory()">Refresh Inventory</button>
+  <button onclick="loadInventory()">
+    Refresh Inventory
+  </button>
 
   <div class="table-box">
     <table>
@@ -188,6 +254,7 @@ th { background: #f8fafc; }
           <th>Quantity</th>
         </tr>
       </thead>
+
       <tbody id="inventoryTable"></tbody>
     </table>
   </div>
@@ -213,12 +280,17 @@ function notify(text) {
 function connect() {
   API = document.getElementById("apiUrl").value.trim();
 
-  if (!API.startsWith("https://script.google.com/macros/s/")) {
+  // Supports regular and school Google Apps Script URLs
+  if (
+    !API.startsWith("https://script.google.com/") ||
+    !API.endsWith("/exec")
+  ) {
     notify("Enter a valid Google Apps Script URL.");
     return;
   }
 
   localStorage.setItem("stockroom_api", API);
+  notify("Connecting to Google Sheets...");
   loadInventory();
 }
 
@@ -248,8 +320,11 @@ function request(params) {
     window[id] = data => {
       cleanup();
 
-      if (data.success) resolve(data);
-      else reject(new Error(data.error || "Request failed"));
+      if (data.success) {
+        resolve(data);
+      } else {
+        reject(new Error(data.error || "Request failed"));
+      }
     };
 
     const query = new URLSearchParams({
@@ -288,7 +363,9 @@ function showInventory() {
 
   let total = 0;
 
-  products.forEach(p => total += p.quantity);
+  products.forEach(p => {
+    total += p.quantity;
+  });
 
   document.getElementById("productsCount").textContent =
     products.length;
@@ -321,7 +398,9 @@ function showSelectedProduct() {
 
   document.getElementById("productInfo").textContent = item
     ? item.name + " — " + item.quantity + " in stock"
-    : "Product not found";
+    : barcode
+      ? "Product not found"
+      : "No product selected";
 }
 
 document.getElementById("barcode")
@@ -392,7 +471,10 @@ async function startScanner() {
 
     await scanner.start(
       { facingMode: "environment" },
-      { fps: 10, qrbox: { width: 250, height: 150 } },
+      {
+        fps: 10,
+        qrbox: { width: 250, height: 150 }
+      },
       async decodedText => {
         document.getElementById("barcode").value = decodedText;
         showSelectedProduct();
@@ -418,7 +500,9 @@ async function stopScanner() {
   scanner = null;
 }
 
-if (API) loadInventory();
+if (API) {
+  loadInventory();
+}
 </script>
 
 </body>

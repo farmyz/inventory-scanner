@@ -3,23 +3,26 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1">
 
-<title>StockRoom Pro | Inventory Management</title>
+<title>StockRoom Pro 2.0</title>
 
 <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
 
 <style>
 :root {
   --navy: #0f172a;
+  --sidebar: #111c33;
   --blue: #2563eb;
-  --light: #f1f5f9;
-  --border: #e2e8f0;
-  --text: #1e293b;
-  --muted: #64748b;
   --green: #16a34a;
   --red: #dc2626;
+  --bg: #f1f5f9;
+  --border: #e2e8f0;
+  --muted: #64748b;
+  --text: #1e293b;
 }
 
 * {
@@ -28,14 +31,13 @@
 
 body {
   margin: 0;
-  background: var(--light);
   font-family: Arial, sans-serif;
+  background: var(--bg);
   color: var(--text);
 }
 
 button, input, select {
-  font-family: inherit;
-  font-size: 14px;
+  font: inherit;
 }
 
 button {
@@ -43,21 +45,21 @@ button {
 }
 
 .sidebar {
-  width: 245px;
-  background: var(--navy);
-  color: white;
-  height: 100vh;
   position: fixed;
-  left: 0;
   top: 0;
+  left: 0;
+  width: 245px;
+  height: 100vh;
+  background: var(--sidebar);
+  color: white;
   padding: 25px 15px;
+  overflow-y: auto;
 }
 
 .brand {
-  font-size: 25px;
+  font-size: 24px;
   font-weight: 800;
-  margin-bottom: 35px;
-  padding-left: 12px;
+  padding: 8px 12px 30px;
 }
 
 .brand span {
@@ -65,34 +67,35 @@ button {
 }
 
 .nav {
-  display: block;
+  background: transparent;
+  border: none;
+  color: #cbd5e1;
   width: 100%;
   text-align: left;
-  padding: 15px;
-  border: none;
-  background: transparent;
-  color: #cbd5e1;
-  border-radius: 8px;
+  padding: 14px;
   margin-bottom: 5px;
+  border-radius: 8px;
+  font-size: 14px;
 }
 
-.nav:hover, .nav.active {
-  background: #1e40af;
+.nav:hover,
+.nav.active {
+  background: #1d4ed8;
   color: white;
 }
 
 .main {
   margin-left: 245px;
   padding: 30px;
-  max-width: 1600px;
+  max-width: 1700px;
 }
 
 .topbar {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  margin-bottom: 25px;
+  justify-content: space-between;
   gap: 15px;
+  margin-bottom: 25px;
 }
 
 .topbar h1 {
@@ -102,90 +105,111 @@ button {
 
 .subtitle {
   color: var(--muted);
-  margin-top: 8px;
+  margin-top: 7px;
+  font-size: 14px;
 }
 
-.connection {
-  padding: 9px 13px;
-  border-radius: 20px;
+.connected {
+  padding: 10px 14px;
+  border-radius: 30px;
   background: #fee2e2;
   color: #991b1b;
   font-size: 12px;
   font-weight: bold;
 }
 
-.connection.online {
+.connected.online {
   background: #dcfce7;
   color: #166534;
+}
+
+.page {
+  display: none;
+}
+
+.page.active {
+  display: block;
 }
 
 .stats {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 18px;
-  margin-bottom: 25px;
+  gap: 16px;
+  margin-bottom: 22px;
 }
 
 .stat {
   background: white;
-  padding: 22px;
-  border-radius: 12px;
   border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 22px;
 }
 
-.stat label {
+.stat small {
   color: var(--muted);
-  font-size: 13px;
 }
 
 .stat h2 {
+  margin: 12px 0 0;
   font-size: 30px;
-  margin: 15px 0 0;
 }
 
 .panel {
   background: white;
   border: 1px solid var(--border);
   border-radius: 12px;
-  padding: 25px;
+  padding: 24px;
   margin-bottom: 20px;
 }
 
 .panel h2 {
-  margin-top: 0;
+  margin: 0 0 12px;
   font-size: 20px;
 }
 
 .panel p {
   color: var(--muted);
+  line-height: 1.5;
+}
+
+.grid2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.field {
+  margin-bottom: 14px;
+}
+
+.field label {
+  display: block;
+  font-weight: bold;
+  font-size: 13px;
+  margin-bottom: 7px;
 }
 
 input, select {
   width: 100%;
-  padding: 13px;
+  padding: 12px;
   border: 1px solid #cbd5e1;
   border-radius: 8px;
-  margin: 8px 0 17px;
   background: white;
 }
 
 input:focus, select:focus {
-  border-color: var(--blue);
   outline: none;
-}
-
-label {
-  font-size: 13px;
-  font-weight: bold;
+  border-color: var(--blue);
 }
 
 .btn {
+  padding: 12px 17px;
   border: none;
-  border-radius: 8px;
-  padding: 13px 18px;
   background: var(--blue);
   color: white;
+  border-radius: 8px;
   font-weight: bold;
+  font-size: 14px;
 }
 
 .btn:hover {
@@ -193,12 +217,8 @@ label {
 }
 
 .btn:disabled {
-  opacity: 0.55;
+  opacity: 0.5;
   cursor: not-allowed;
-}
-
-.btn.secondary {
-  background: #334155;
 }
 
 .btn.green {
@@ -209,6 +229,10 @@ label {
   background: var(--red);
 }
 
+.btn.dark {
+  background: #334155;
+}
+
 .btn.gray {
   background: #e2e8f0;
   color: #334155;
@@ -216,31 +240,34 @@ label {
 
 .btn.full {
   width: 100%;
-  margin-top: 8px;
+  margin: 5px 0;
 }
 
-.flex {
+.btn.small {
+  font-size: 12px;
+  padding: 8px 12px;
+}
+
+.actions {
   display: flex;
-  gap: 12px;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 14px 0;
 }
 
-.flex > * {
-  flex: 1;
-  min-width: 0;
-}
-
-.grid2 {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-}
-
-.page {
+.message {
   display: none;
+  padding: 15px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  background: #dbeafe;
+  color: #1e40af;
+  font-size: 14px;
 }
 
-.page.active {
-  display: block;
+.message.error {
+  background: #fee2e2;
+  color: #991b1b;
 }
 
 .tablewrap {
@@ -253,24 +280,24 @@ table {
   text-align: left;
 }
 
-th {
-  background: #f8fafc;
-  padding: 15px;
-  color: #475569;
+th, td {
+  padding: 13px;
+  border-bottom: 1px solid var(--border);
   font-size: 13px;
 }
 
-td {
-  padding: 15px;
-  border-bottom: 1px solid var(--border);
-  font-size: 14px;
+th {
+  background: #f8fafc;
+  color: #475569;
+  white-space: nowrap;
 }
 
 .status {
   padding: 6px 10px;
-  border-radius: 20px;
-  font-size: 12px;
+  border-radius: 30px;
   font-weight: bold;
+  font-size: 11px;
+  white-space: nowrap;
 }
 
 .status.good {
@@ -288,76 +315,75 @@ td {
   color: #991b1b;
 }
 
-#reader {
+.scanbox {
   width: 100%;
-  max-width: 500px;
+  max-width: 520px;
   margin: 15px auto;
 }
 
-.barcode-preview {
+.barcode-box {
   background: #f8fafc;
+  padding: 22px;
   border: 1px dashed #94a3b8;
-  padding: 25px;
-  text-align: center;
   border-radius: 10px;
+  text-align: center;
   overflow-x: auto;
 }
 
-.barcode-preview canvas {
+.barcode-box canvas {
   max-width: 100%;
   height: auto;
-  background: white;
 }
 
-.message {
-  padding: 15px;
-  border-radius: 8px;
-  background: #dbeafe;
-  color: #1e40af;
-  margin-bottom: 20px;
-  display: none;
+.chartbox {
+  height: 300px;
+  position: relative;
 }
 
-.message.error {
-  background: #fee2e2;
-  color: #991b1b;
+.alert {
+  border-left: 4px solid #f59e0b;
+  background: #fffbeb;
+  padding: 12px;
+  margin-bottom: 9px;
+  border-radius: 5px;
+  font-size: 13px;
+}
+
+.muted {
+  color: var(--muted);
+  font-size: 13px;
 }
 
 .modal {
-  display: none;
   position: fixed;
   inset: 0;
   background: #0009;
   z-index: 1000;
+  padding: 20px;
+  display: none;
   align-items: center;
   justify-content: center;
-  padding: 20px;
 }
 
 .modal.show {
   display: flex;
 }
 
-.modal-content {
-  background: white;
-  padding: 28px;
-  border-radius: 15px;
-  max-width: 480px;
+.modal-body {
   width: 100%;
+  max-width: 490px;
+  padding: 28px;
+  background: white;
+  border-radius: 15px;
   text-align: center;
 }
 
-.modal-content canvas {
+.modal-body canvas {
   max-width: 100%;
   height: auto;
 }
 
-.small {
-  color: var(--muted);
-  font-size: 12px;
-}
-
-@media(max-width: 1000px) {
+@media(max-width: 1100px) {
   .stats {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -370,18 +396,18 @@ td {
 @media(max-width: 750px) {
   .sidebar {
     position: static;
-    width: 100%;
     height: auto;
-    padding: 15px;
+    width: 100%;
+    padding: 12px;
   }
 
   .brand {
-    margin-bottom: 12px;
+    padding: 10px;
   }
 
   .nav {
-    display: inline-block;
     width: auto;
+    display: inline-block;
     padding: 10px;
     font-size: 12px;
   }
@@ -396,24 +422,16 @@ td {
     flex-direction: column;
   }
 
-  .stats {
-    gap: 10px;
-  }
-
   .stat {
-    padding: 15px;
+    padding: 16px;
   }
 
   .stat h2 {
-    font-size: 23px;
+    font-size: 24px;
   }
 
   .panel {
     padding: 17px;
-  }
-
-  .flex {
-    flex-direction: column;
   }
 }
 </style>
@@ -421,42 +439,55 @@ td {
 
 <body>
 
-<aside class="sidebar">
+<!-- SIDEBAR -->
 
-  <div class="brand">
-    StockRoom <span>Pro</span>
-  </div>
+<aside class="sidebar">
+  <div class="brand">StockRoom <span>Pro</span></div>
 
   <button class="nav active"
-    onclick="showPage('dashboard', this)">
+    onclick="navigate('dashboard',this)">
     Dashboard
   </button>
 
   <button class="nav"
-    onclick="showPage('inventory', this)">
+    onclick="navigate('inventory',this)">
     Inventory
   </button>
 
   <button class="nav"
-    onclick="showPage('scanner', this)">
+    onclick="navigate('scanner',this)">
     Barcode Scanner
   </button>
 
   <button class="nav"
-    onclick="showPage('products', this)">
+    onclick="navigate('bulk',this)">
+    Bulk Scanning
+  </button>
+
+  <button class="nav"
+    onclick="navigate('products',this)">
     Add Product
   </button>
 
   <button class="nav"
-    onclick="showPage('barcodes', this)">
-    Barcode Generator
+    onclick="navigate('barcodes',this)">
+    Barcode Labels
   </button>
 
   <button class="nav"
-    onclick="showPage('settings', this)">
-    Settings
+    onclick="navigate('activity',this)">
+    Activity History
   </button>
 
+  <button class="nav"
+    onclick="navigate('analytics',this)">
+    Analytics
+  </button>
+
+  <button class="nav"
+    onclick="navigate('settings',this)">
+    Settings
+  </button>
 </aside>
 
 <main class="main">
@@ -465,11 +496,11 @@ td {
   <div>
     <h1 id="pageTitle">Dashboard</h1>
     <div class="subtitle">
-      Inventory management and barcode tracking
+      Inventory management and tracking
     </div>
   </div>
 
-  <div id="connection" class="connection">
+  <div id="connection" class="connected">
     Not Connected
   </div>
 </div>
@@ -478,379 +509,572 @@ td {
 
 <!-- DASHBOARD -->
 
-<section id="dashboard" class="page active">
+<section class="page active" id="dashboard">
 
-  <div class="stats">
-
-    <div class="stat">
-      <label>Total Products</label>
-      <h2 id="totalProducts">0</h2>
-    </div>
-
-    <div class="stat">
-      <label>Total Stock</label>
-      <h2 id="totalStock">0</h2>
-    </div>
-
-    <div class="stat">
-      <label>Low Stock</label>
-      <h2 id="lowStock">0</h2>
-    </div>
-
-    <div class="stat">
-      <label>Out of Stock</label>
-      <h2 id="outStock">0</h2>
-    </div>
-
+<div class="stats">
+  <div class="stat">
+    <small>Total Products</small>
+    <h2 id="totalProducts">0</h2>
   </div>
 
-  <div class="grid2">
+  <div class="stat">
+    <small>Total Items</small>
+    <h2 id="totalStock">0</h2>
+  </div>
 
-    <div class="panel">
-      <h2>Quick Actions</h2>
-      <p>Manage your inventory.</p>
+  <div class="stat">
+    <small>Low Stock</small>
+    <h2 id="lowStock">0</h2>
+  </div>
 
-      <button class="btn full"
-        onclick="navigate('scanner')">
-        Scan Barcode
-      </button>
+  <div class="stat">
+    <small>Out of Stock</small>
+    <h2 id="outStock">0</h2>
+  </div>
+</div>
 
-      <button class="btn green full"
-        onclick="navigate('products')">
-        Register New Product
-      </button>
+<div class="grid2">
 
-      <button class="btn secondary full"
-        onclick="navigate('inventory')">
-        View All Inventory
-      </button>
-    </div>
+  <div class="panel">
+    <h2>Quick Actions</h2>
 
-    <div class="panel">
-      <h2>Inventory Alerts</h2>
-      <div id="alerts">
-        Connect Google Sheets to see alerts.
-      </div>
-    </div>
+    <button class="btn full"
+      onclick="navigate('scanner')">
+      Scan Barcode
+    </button>
 
+    <button class="btn green full"
+      onclick="navigate('products')">
+      Register Product
+    </button>
+
+    <button class="btn dark full"
+      onclick="navigate('bulk')">
+      Bulk Scan Products
+    </button>
+
+    <button class="btn gray full"
+      onclick="loadInventory()">
+      Refresh Inventory
+    </button>
   </div>
 
   <div class="panel">
-    <h2>Inventory Overview</h2>
-
-    <div class="tablewrap">
-      <table>
-        <thead>
-          <tr>
-            <th>Barcode</th>
-            <th>Product</th>
-            <th>Quantity</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody id="dashboardTable"></tbody>
-      </table>
-    </div>
+    <h2>Inventory Alerts</h2>
+    <div id="alerts">No data loaded.</div>
   </div>
+
+</div>
+
+<div class="panel">
+  <h2>Inventory Overview</h2>
+  <div class="tablewrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Product</th>
+          <th>Category</th>
+          <th>Location</th>
+          <th>Stock</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody id="dashboardTable"></tbody>
+    </table>
+  </div>
+</div>
 
 </section>
 
 <!-- INVENTORY -->
 
-<section id="inventory" class="page">
+<section class="page" id="inventory">
 
-  <div class="panel">
+<div class="panel">
+  <h2>All Inventory</h2>
 
-    <h2>Product Inventory</h2>
-    <p>Search and monitor all registered products.</p>
-
-    <input
-      id="searchInventory"
-      placeholder="Search by name or barcode"
-      oninput="renderInventory()"
-    >
-
-    <button class="btn" onclick="loadInventory()">
-      Refresh Google Sheets
-    </button>
-
-    <div class="tablewrap">
-      <table>
-        <thead>
-          <tr>
-            <th>Barcode</th>
-            <th>Product</th>
-            <th>Quantity</th>
-            <th>Status</th>
-            <th>Manage</th>
-          </tr>
-        </thead>
-        <tbody id="inventoryTable"></tbody>
-      </table>
+  <div class="grid2">
+    <div class="field">
+      <label>Search Products</label>
+      <input id="inventorySearch"
+        placeholder="Name or barcode"
+        oninput="renderInventory()">
     </div>
 
+    <div class="field">
+      <label>Filter Category</label>
+      <select id="categoryFilter"
+        onchange="renderInventory()">
+        <option value="">All Categories</option>
+      </select>
+    </div>
   </div>
+
+  <button class="btn" onclick="loadInventory()">
+    Refresh Google Sheets
+  </button>
+
+  <div class="tablewrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Barcode</th>
+          <th>Product</th>
+          <th>Category</th>
+          <th>Location</th>
+          <th>Quantity</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="inventoryTable"></tbody>
+    </table>
+  </div>
+</div>
 
 </section>
 
-<!-- SCANNER -->
+<!-- SINGLE SCANNER -->
 
-<section id="scanner" class="page">
+<section class="page" id="scanner">
 
-  <div class="grid2">
+<div class="grid2">
 
-    <div class="panel">
-      <h2>Camera Barcode Scanner</h2>
-      <p>
-        Point your camera at a printed barcode.
-      </p>
+  <div class="panel">
+    <h2>Camera Barcode Scanner</h2>
 
-      <div id="reader"></div>
+    <p>Scan any registered product barcode.</p>
 
-      <button class="btn full" onclick="startScanner()">
-        Open Camera
-      </button>
+    <div id="singleReader" class="scanbox"></div>
 
-      <button class="btn gray full" onclick="stopScanner()">
-        Stop Camera
-      </button>
+    <button class="btn full"
+      onclick="startScanner('single')">
+      Open Camera
+    </button>
 
-      <p class="small">
-        Camera access requires HTTPS and browser permission.
-      </p>
+    <button class="btn gray full"
+      onclick="stopScanner()">
+      Stop Camera
+    </button>
+  </div>
+
+  <div class="panel">
+    <h2>Update Inventory</h2>
+
+    <div class="field">
+      <label>Barcode</label>
+      <input id="scanBarcode"
+        placeholder="Scan or enter barcode"
+        oninput="findScannedProduct()">
     </div>
 
-    <div class="panel">
+    <p id="scannedInfo">No product selected.</p>
 
-      <h2>Update Inventory</h2>
-
-      <label>Scanned Barcode</label>
-      <input
-        id="scanBarcode"
-        placeholder="Scan or type barcode"
-        oninput="findScannedProduct()"
-      >
-
-      <div id="scannedInfo">
-        No product selected.
-      </div>
-
-      <br>
-
+    <div class="field">
       <label>Action</label>
       <select id="stockAction">
         <option value="add">Add Stock (+)</option>
         <option value="remove">Remove Stock (-)</option>
       </select>
-
-      <label>Quantity</label>
-      <input
-        id="stockQuantity"
-        type="number"
-        min="1"
-        step="1"
-        value="1"
-      >
-
-      <button class="btn green full"
-        onclick="updateInventory()">
-        Save Inventory Change
-      </button>
-
     </div>
 
+    <div class="field">
+      <label>Quantity</label>
+      <input id="stockQuantity"
+        type="number" min="1" step="1" value="1">
+    </div>
+
+    <button class="btn green full"
+      onclick="updateInventory()">
+      Save Stock Change
+    </button>
   </div>
+
+</div>
+
+</section>
+
+<!-- BULK SCANNING -->
+
+<section class="page" id="bulk">
+
+<div class="grid2">
+
+  <div class="panel">
+    <h2>Bulk Barcode Scanner</h2>
+
+    <p>
+      Scan multiple products without restarting the camera.
+      Each scan adds an item to your queue.
+    </p>
+
+    <div id="bulkReader" class="scanbox"></div>
+
+    <button class="btn full"
+      onclick="startScanner('bulk')">
+      Start Bulk Scanning
+    </button>
+
+    <button class="btn gray full"
+      onclick="stopScanner()">
+      Stop Camera
+    </button>
+
+    <div class="field">
+      <label>Manual Barcode</label>
+      <input id="bulkBarcode"
+        placeholder="Enter barcode manually">
+    </div>
+
+    <div class="field">
+      <label>Action for Next Item</label>
+      <select id="bulkMode">
+        <option value="add">Add Stock</option>
+        <option value="remove">Remove Stock</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label>Quantity per Scan</label>
+      <input id="bulkQuantity"
+        type="number" min="1" step="1" value="1">
+    </div>
+
+    <button class="btn dark full"
+      onclick="addBulkManual()">
+      Add to Queue
+    </button>
+  </div>
+
+  <div class="panel">
+    <h2>Pending Changes</h2>
+
+    <p>
+      <strong id="queueCount">0</strong>
+      pending changes. Maximum 20 per batch.
+    </p>
+
+    <div class="tablewrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Product</th>
+            <th>Action</th>
+            <th>Qty</th>
+            <th>Remove</th>
+          </tr>
+        </thead>
+        <tbody id="bulkTable"></tbody>
+      </table>
+    </div>
+
+    <button class="btn green full"
+      onclick="submitBulk()">
+      Submit All Changes
+    </button>
+
+    <button class="btn red full"
+      onclick="clearBulk()">
+      Clear Queue
+    </button>
+  </div>
+
+</div>
 
 </section>
 
 <!-- ADD PRODUCT -->
 
-<section id="products" class="page">
+<section class="page" id="products">
 
-  <div class="grid2">
+<div class="grid2">
 
-    <div class="panel">
+  <div class="panel">
+    <h2>Register New Product</h2>
 
-      <h2>Register New Product</h2>
-
-      <p>
-        Create a new product and its barcode.
-      </p>
-
+    <div class="field">
       <label>Product Name</label>
-      <input
-        id="newName"
+      <input id="newName"
         placeholder="Example: Blue T-Shirt"
-      >
+        oninput="previewNewBarcode()">
+    </div>
 
+    <div class="field">
+      <label>Category</label>
+      <input id="newCategory"
+        list="categorySuggestions"
+        placeholder="Example: Clothing">
+    </div>
+
+    <datalist id="categorySuggestions">
+      <option value="Clothing">
+      <option value="Electronics">
+      <option value="Food">
+      <option value="Supplies">
+      <option value="Tools">
+      <option value="Other">
+    </datalist>
+
+    <div class="field">
+      <label>Storage Location</label>
+      <input id="newLocation"
+        placeholder="Example: Shelf A1">
+    </div>
+
+    <div class="field">
       <label>Starting Quantity</label>
-      <input
-        id="newQuantity"
-        type="number"
-        min="0"
-        step="1"
-        value="0"
-      >
+      <input id="newQuantity"
+        type="number" min="0" step="1" value="0">
+    </div>
 
-      <label>Product Barcode</label>
-      <input
-        id="newBarcode"
+    <div class="field">
+      <label>Barcode Number</label>
+      <input id="newBarcode"
         placeholder="Generate or enter barcode"
-        oninput="previewNewBarcode()"
-      >
-
-      <button class="btn secondary full"
-        onclick="generateNewBarcode()">
-        Generate Barcode Number
-      </button>
-
-      <button class="btn green full"
-        onclick="registerProduct()">
-        Save Product & Download Barcode
-      </button>
-
+        oninput="previewNewBarcode()">
     </div>
 
-    <div class="panel">
+    <button class="btn dark full"
+      onclick="generateNewBarcode()">
+      Generate Barcode Number
+    </button>
 
-      <h2>Barcode Preview</h2>
-
-      <p>
-        This is the label you can print and scan.
-      </p>
-
-      <div class="barcode-preview">
-        <canvas id="newBarcodeCanvas"></canvas>
-      </div>
-
-      <button class="btn full"
-        onclick="downloadNewBarcode()">
-        Download Barcode PNG
-      </button>
-
-    </div>
-
+    <button class="btn green full"
+      onclick="registerProduct()">
+      Save Product & Download Barcode
+    </button>
   </div>
+
+  <div class="panel">
+    <h2>Barcode Preview</h2>
+
+    <div class="barcode-box">
+      <canvas id="newBarcodeCanvas"></canvas>
+    </div>
+
+    <button class="btn full"
+      onclick="downloadNewBarcode()">
+      Download Barcode PNG
+    </button>
+  </div>
+
+</div>
 
 </section>
 
-<!-- BARCODE GENERATOR -->
+<!-- EXISTING BARCODE LABELS -->
 
-<section id="barcodes" class="page">
+<section class="page" id="barcodes">
 
-  <div class="panel">
+<div class="panel">
+  <h2>Barcode Label Generator</h2>
 
-    <h2>Barcode Generator</h2>
+  <p>
+    Select a registered product to download or
+    print another copy of its barcode label.
+  </p>
 
-    <p>
-      Generate or download labels for existing products.
-    </p>
-
-    <label>Select Product</label>
-
+  <div class="field">
+    <label>Product</label>
     <select id="barcodeSelect"
       onchange="previewExistingBarcode()">
-      <option value="">Select a product</option>
+      <option value="">Select Product</option>
     </select>
+  </div>
 
-    <div class="barcode-preview">
-      <canvas id="existingBarcodeCanvas"></canvas>
-    </div>
+  <div class="barcode-box">
+    <canvas id="existingBarcodeCanvas"></canvas>
+  </div>
 
-    <br>
-
+  <div class="actions">
     <button class="btn green"
       onclick="downloadExistingBarcode()">
-      Download Barcode PNG
+      Download PNG
     </button>
 
-    <button class="btn secondary"
+    <button class="btn dark"
       onclick="printExistingBarcode()">
-      Print Barcode
+      Print Label
+    </button>
+  </div>
+</div>
+
+</section>
+
+<!-- ACTIVITY HISTORY -->
+
+<section class="page" id="activity">
+
+<div class="panel">
+  <h2>Inventory Activity History</h2>
+
+  <p>
+    Every registration, addition, removal, and bulk
+    change is recorded in your Activity sheet.
+  </p>
+
+  <div class="grid2">
+    <div class="field">
+      <label>Search History</label>
+      <input id="historySearch"
+        placeholder="Product or barcode"
+        oninput="renderHistory()">
+    </div>
+
+    <div class="field">
+      <label>Filter Action</label>
+      <select id="historyFilter"
+        onchange="renderHistory()">
+        <option value="">All Actions</option>
+        <option value="REGISTER">Registered</option>
+        <option value="ADD">Stock Added</option>
+        <option value="REMOVE">Stock Removed</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="actions">
+    <button class="btn" onclick="loadInventory()">
+      Refresh History
     </button>
 
+    <button class="btn dark" onclick="exportHistory()">
+      Export CSV
+    </button>
   </div>
+
+  <div class="tablewrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Product</th>
+          <th>Action</th>
+          <th>Change</th>
+          <th>New Quantity</th>
+        </tr>
+      </thead>
+      <tbody id="historyTable"></tbody>
+    </table>
+  </div>
+</div>
+
+</section>
+
+<!-- ANALYTICS -->
+
+<section class="page" id="analytics">
+
+<div class="stats">
+  <div class="stat">
+    <small>Stock Added</small>
+    <h2 id="addedTotal">0</h2>
+  </div>
+
+  <div class="stat">
+    <small>Stock Removed</small>
+    <h2 id="removedTotal">0</h2>
+  </div>
+
+  <div class="stat">
+    <small>Categories</small>
+    <h2 id="categoryCount">0</h2>
+  </div>
+
+  <div class="stat">
+    <small>Recorded Activities</small>
+    <h2 id="activityCount">0</h2>
+  </div>
+</div>
+
+<div class="grid2">
+
+  <div class="panel">
+    <h2>Inventory by Category</h2>
+    <div class="chartbox">
+      <canvas id="categoryChart"></canvas>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>Daily Stock Movement</h2>
+    <p class="muted">Last seven days</p>
+
+    <div class="chartbox">
+      <canvas id="movementChart"></canvas>
+    </div>
+  </div>
+
+</div>
+
+<div class="panel">
+  <h2>Analytics Information</h2>
+  <p>
+    Charts are calculated from your current Inventory
+    sheet and the most recent 500 Activity records.
+    Stock movement excludes initial product
+    registration quantities.
+  </p>
+</div>
 
 </section>
 
 <!-- SETTINGS -->
 
-<section id="settings" class="page">
+<section class="page" id="settings">
 
-  <div class="panel">
+<div class="panel">
+  <h2>Google Sheets Connection</h2>
 
-    <h2>Google Sheets Connection</h2>
-
-    <p>
-      Connect your Google Apps Script deployment.
-    </p>
-
+  <div class="field">
     <label>Apps Script Web App URL</label>
-    <input
-      id="apiUrl"
-      placeholder="https://script.google.com/.../exec"
-    >
-
-    <button class="btn" onclick="connect()">
-      Connect Google Sheets
-    </button>
-
-    <button class="btn secondary"
-      onclick="loadInventory()">
-      Test Connection
-    </button>
-
+    <input id="apiUrl"
+      placeholder="https://script.google.com/.../exec">
   </div>
 
-  <div class="panel">
+  <button class="btn" onclick="connect()">
+    Connect Spreadsheet
+  </button>
 
-    <h2>Inventory Preferences</h2>
+  <button class="btn dark"
+    onclick="loadInventory()">
+    Test Connection
+  </button>
+</div>
 
+<div class="panel">
+  <h2>Inventory Preferences</h2>
+
+  <div class="field">
     <label>Low Stock Warning Level</label>
-
-    <input
-      id="lowStockLevel"
-      type="number"
-      min="1"
-      step="1"
-      value="5"
-      onchange="savePreferences()"
-    >
-
-    <p class="small">
-      Products with quantities at or below this number
-      will show a low-stock warning.
-    </p>
-
+    <input id="lowStockLevel"
+      type="number" min="1" step="1" value="5"
+      onchange="savePreferences()">
   </div>
+</div>
 
 </section>
 
 </main>
 
-<!-- DOWNLOAD MODAL -->
+<!-- BARCODE DOWNLOAD WINDOW -->
 
-<div id="downloadModal" class="modal">
-
-  <div class="modal-content">
-
+<div class="modal" id="downloadModal">
+  <div class="modal-body">
     <h2>Product Created!</h2>
-
     <p>
-      Your product was added to Google Sheets.
-      Download the barcode and print it to scan later.
+      Your product was saved to Google Sheets.
+      Download the barcode label to print it.
     </p>
 
     <canvas id="modalBarcodeCanvas"></canvas>
-
-    <br><br>
 
     <button class="btn green full"
       onclick="downloadModalBarcode()">
       Download Barcode PNG
     </button>
 
-    <button class="btn secondary full"
+    <button class="btn dark full"
       onclick="printModalBarcode()">
       Print Barcode
     </button>
@@ -859,111 +1083,126 @@ td {
       onclick="closeModal()">
       Done
     </button>
-
   </div>
-
 </div>
 
 <script>
-// =======================================
-// STOCKROOM PRO
-// GOOGLE SHEETS INVENTORY SYSTEM
-// =======================================
+// ========================================
+// STOCKROOM PRO 2.0
+// ========================================
 
 let API = localStorage.getItem("stockroom_api") || "";
 let products = [];
+let history = [];
+let bulkQueue = [];
+
 let scanner = null;
-let scanning = false;
+let scannerStarting = false;
+let scannerMode = "";
+let lastScan = "";
+let lastScanTime = 0;
+
 let busy = false;
+let categoryChart = null;
+let movementChart = null;
+
 let latestBarcode = "";
 let latestName = "";
 
 let lowLevel =
   Number(localStorage.getItem("stockroom_low")) || 5;
 
-document.getElementById("apiUrl").value = API;
-document.getElementById("lowStockLevel").value = lowLevel;
+const $ = id => document.getElementById(id);
 
-// =======================================
+$("apiUrl").value = API;
+$("lowStockLevel").value = lowLevel;
+
+// ========================================
 // NAVIGATION
-// =======================================
+// ========================================
 
-function showPage(id, button) {
-  document.querySelectorAll(".page").forEach(page => {
-    page.classList.remove("active");
+function navigate(page, button) {
+  document.querySelectorAll(".page").forEach(p => {
+    p.classList.remove("active");
   });
 
-  document.getElementById(id).classList.add("active");
+  $(page).classList.add("active");
 
-  document.querySelectorAll(".nav").forEach(nav => {
-    nav.classList.remove("active");
+  document.querySelectorAll(".nav").forEach(n => {
+    n.classList.remove("active");
   });
 
-  if (button) button.classList.add("active");
+  const nav = button || [...document.querySelectorAll(".nav")]
+    .find(n => n.getAttribute("onclick")
+      .includes("'" + page + "'"));
+
+  if (nav) nav.classList.add("active");
 
   const titles = {
     dashboard: "Dashboard",
-    inventory: "Inventory",
+    inventory: "Inventory Management",
     scanner: "Barcode Scanner",
+    bulk: "Bulk Inventory Scanning",
     products: "Register Product",
-    barcodes: "Barcode Generator",
+    barcodes: "Barcode Labels",
+    activity: "Activity History",
+    analytics: "Inventory Analytics",
     settings: "Settings"
   };
 
-  document.getElementById("pageTitle").textContent = titles[id];
+  $("pageTitle").textContent = titles[page];
 
-  if (id !== "scanner") stopScanner();
+  if (
+    page !== "scanner" &&
+    page !== "bulk"
+  ) {
+    stopScanner();
+  }
+
+  if (page === "analytics") {
+    renderCharts();
+  }
 }
 
-function navigate(id) {
-  const button = [...document.querySelectorAll(".nav")]
-    .find(b => b.getAttribute("onclick").includes("'" + id + "'"));
+// ========================================
+// NOTIFICATIONS
+// ========================================
 
-  showPage(id, button);
-}
-
-// =======================================
-// MESSAGES
-// =======================================
-
-function notify(message, error = false) {
-  const box = document.getElementById("message");
+function notify(text, error = false) {
+  const box = $("message");
 
   box.style.display = "block";
-  box.textContent = message;
   box.className = error ? "message error" : "message";
+  box.textContent = text;
 }
 
-function setConnection(online) {
-  const badge = document.getElementById("connection");
-
-  badge.textContent = online
+function setConnection(connected) {
+  $("connection").textContent = connected
     ? "Google Sheets Connected"
     : "Not Connected";
 
-  badge.classList.toggle("online", online);
+  $("connection").classList.toggle(
+    "online", connected
+  );
 }
 
-// =======================================
-// GOOGLE SHEETS API
-// =======================================
+// ========================================
+// GOOGLE SHEETS CONNECTION
+// ========================================
 
 function connect() {
-  const url = document.getElementById("apiUrl").value.trim();
+  const url = $("apiUrl").value.trim();
 
   if (
     !url.startsWith("https://script.google.com/") ||
     !url.endsWith("/exec")
   ) {
-    notify("Enter a valid Apps Script Web App URL.", true);
+    notify("Enter a valid Apps Script URL.", true);
     return;
   }
 
   API = url;
-
   localStorage.setItem("stockroom_api", API);
-
-  notify("Connecting to Google Sheets...");
 
   loadInventory();
 }
@@ -976,34 +1215,35 @@ function request(params) {
     }
 
     const callback =
-      "stockroom_" + Date.now() + "_" +
+      "sr_" + Date.now() + "_" +
       Math.random().toString(36).slice(2);
 
     const script = document.createElement("script");
-
     let finished = false;
 
-    const timeout = setTimeout(() => {
-      finish(new Error("Google Sheets connection timed out."));
+    const timer = setTimeout(() => {
+      finish(new Error("Connection timed out."));
     }, 20000);
 
-    function finish(error, data) {
+    function finish(error, result) {
       if (finished) return;
 
       finished = true;
-      clearTimeout(timeout);
+      clearTimeout(timer);
       delete window[callback];
       script.remove();
 
       if (error) reject(error);
-      else resolve(data);
+      else resolve(result);
     }
 
     window[callback] = data => {
       if (data && data.success) {
         finish(null, data);
       } else {
-        finish(new Error(data?.error || "Request failed."));
+        finish(new Error(
+          data?.error || "Google Sheets request failed."
+        ));
       }
     };
 
@@ -1011,6 +1251,8 @@ function request(params) {
       ...params,
       callback
     });
+
+    query.set("_t", Date.now());
 
     script.src = API + "?" + query.toString();
 
@@ -1022,223 +1264,277 @@ function request(params) {
   });
 }
 
+function applyData(data) {
+  products = data.products || [];
+  history = data.history || [];
+
+  renderAll();
+  setConnection(true);
+}
+
 async function loadInventory() {
   try {
-    notify("Loading inventory...");
+    notify("Loading Google Sheets...");
 
     const result = await request({
       action: "list"
     });
 
-    products = result.products || [];
-
-    renderAll();
-    setConnection(true);
-
-    notify("Inventory successfully synced with Google Sheets.");
+    applyData(result);
+    notify("Inventory synced successfully.");
   } catch (error) {
     setConnection(false);
     notify(error.message, true);
   }
 }
 
-// =======================================
-// DASHBOARD
-// =======================================
+// ========================================
+// HELPERS
+// ========================================
+
+function productByBarcode(barcode) {
+  return products.find(
+    p => p.barcode === barcode
+  );
+}
+
+function validQuantity(value, allowZero = false) {
+  const n = Number(value);
+
+  return Number.isSafeInteger(n) &&
+    n >= (allowZero ? 0 : 1);
+}
 
 function getStatus(quantity) {
   if (quantity <= 0) {
-    return {
-      text: "Out of Stock",
-      type: "out"
-    };
+    return { label: "Out of Stock", type: "out" };
   }
 
   if (quantity <= lowLevel) {
-    return {
-      text: "Low Stock",
-      type: "low"
-    };
+    return { label: "Low Stock", type: "low" };
   }
 
-  return {
-    text: "In Stock",
-    type: "good"
-  };
+  return { label: "In Stock", type: "good" };
 }
 
-function createCell(row, value) {
-  const cell = document.createElement("td");
-  cell.textContent = value;
-  row.appendChild(cell);
-  return cell;
+function cell(row, value) {
+  const td = document.createElement("td");
+  td.textContent = value;
+  row.appendChild(td);
+  return td;
 }
 
-function createStatusCell(row, quantity) {
-  const cell = document.createElement("td");
+function statusCell(row, quantity) {
+  const td = document.createElement("td");
+  const span = document.createElement("span");
   const status = getStatus(quantity);
-  const badge = document.createElement("span");
 
-  badge.className = "status " + status.type;
-  badge.textContent = status.text;
+  span.className = "status " + status.type;
+  span.textContent = status.label;
 
-  cell.appendChild(badge);
-  row.appendChild(cell);
+  td.appendChild(span);
+  row.appendChild(td);
 }
+
+// ========================================
+// DASHBOARD
+// ========================================
 
 function renderDashboard() {
-  let totalStock = 0;
-  let lowStock = 0;
-  let outStock = 0;
+  const total = products.reduce(
+    (sum, p) => sum + p.quantity, 0
+  );
 
-  products.forEach(product => {
-    totalStock += product.quantity;
+  const low = products.filter(
+    p => p.quantity > 0 && p.quantity <= lowLevel
+  );
 
-    if (product.quantity === 0) {
-      outStock++;
-    } else if (product.quantity <= lowLevel) {
-      lowStock++;
-    }
+  const out = products.filter(
+    p => p.quantity === 0
+  );
+
+  $("totalProducts").textContent = products.length;
+  $("totalStock").textContent = total;
+  $("lowStock").textContent = low.length;
+  $("outStock").textContent = out.length;
+
+  const alerts = $("alerts");
+  alerts.replaceChildren();
+
+  const warnings = [...out, ...low];
+
+  if (!warnings.length) {
+    const p = document.createElement("p");
+    p.textContent = "No low-stock alerts.";
+    alerts.appendChild(p);
+  }
+
+  warnings.forEach(product => {
+    const div = document.createElement("div");
+    div.className = "alert";
+    div.textContent =
+      product.name + " — " +
+      product.quantity + " remaining";
+    alerts.appendChild(div);
   });
 
-  document.getElementById("totalProducts").textContent =
-    products.length;
-
-  document.getElementById("totalStock").textContent =
-    totalStock;
-
-  document.getElementById("lowStock").textContent =
-    lowStock;
-
-  document.getElementById("outStock").textContent =
-    outStock;
-
-  const table = document.getElementById("dashboardTable");
+  const table = $("dashboardTable");
   table.replaceChildren();
 
-  products.slice(0, 10).forEach(product => {
+  products.slice(0, 12).forEach(p => {
     const row = document.createElement("tr");
 
-    createCell(row, product.barcode);
-    createCell(row, product.name);
-    createCell(row, product.quantity);
-    createStatusCell(row, product.quantity);
+    cell(row, p.name);
+    cell(row, p.category);
+    cell(row, p.location);
+    cell(row, p.quantity);
+    statusCell(row, p.quantity);
 
     table.appendChild(row);
   });
+}
 
-  const alerts = document.getElementById("alerts");
-  alerts.replaceChildren();
+// ========================================
+// INVENTORY
+// ========================================
 
-  const warningProducts = products.filter(
-    p => p.quantity <= lowLevel
-  );
+function populateFilters() {
+  const select = $("categoryFilter");
+  const previous = select.value;
 
-  if (warningProducts.length === 0) {
-    const p = document.createElement("p");
-    p.textContent = "All products have sufficient stock.";
-    alerts.appendChild(p);
-  } else {
-    warningProducts.forEach(product => {
-      const p = document.createElement("p");
-      p.textContent =
-        product.name + " — " + product.quantity + " remaining";
-      alerts.appendChild(p);
-    });
+  select.replaceChildren();
+
+  const all = new Option("All Categories", "");
+  select.appendChild(all);
+
+  const categories = [
+    ...new Set(products.map(p => p.category))
+  ].sort();
+
+  categories.forEach(category => {
+    select.appendChild(
+      new Option(category, category)
+    );
+  });
+
+  if (categories.includes(previous)) {
+    select.value = previous;
   }
 }
 
-// =======================================
-// INVENTORY TABLE
-// =======================================
-
 function renderInventory() {
-  const query = document
-    .getElementById("searchInventory")
+  const search = $("inventorySearch")
     .value.toLowerCase();
 
-  const table = document.getElementById("inventoryTable");
+  const category = $("categoryFilter").value;
+  const table = $("inventoryTable");
+
   table.replaceChildren();
 
   products
-    .filter(product =>
-      product.name.toLowerCase().includes(query) ||
-      product.barcode.toLowerCase().includes(query)
-    )
-    .forEach(product => {
+    .filter(p => {
+      const matchesSearch =
+        p.name.toLowerCase().includes(search) ||
+        p.barcode.toLowerCase().includes(search) ||
+        p.location.toLowerCase().includes(search);
+
+      const matchesCategory =
+        !category || p.category === category;
+
+      return matchesSearch && matchesCategory;
+    })
+    .forEach(p => {
       const row = document.createElement("tr");
 
-      createCell(row, product.barcode);
-      createCell(row, product.name);
-      createCell(row, product.quantity);
-      createStatusCell(row, product.quantity);
+      cell(row, p.barcode);
+      cell(row, p.name);
+      cell(row, p.category);
+      cell(row, p.location);
+      cell(row, p.quantity);
+      statusCell(row, p.quantity);
 
-      const cell = document.createElement("td");
+      const td = document.createElement("td");
       const button = document.createElement("button");
 
+      button.className = "btn small";
       button.textContent = "Manage";
-      button.className = "btn";
 
       button.onclick = () => {
         navigate("scanner");
-
-        document.getElementById("scanBarcode").value =
-          product.barcode;
-
+        $("scanBarcode").value = p.barcode;
         findScannedProduct();
       };
 
-      cell.appendChild(button);
-      row.appendChild(cell);
+      td.appendChild(button);
+      row.appendChild(td);
       table.appendChild(row);
     });
 }
 
-// =======================================
-// CAMERA SCANNER
-// =======================================
+// ========================================
+// SCANNER
+// ========================================
 
-async function startScanner() {
-  if (scanner || scanning) return;
-
-  if (typeof Html5Qrcode === "undefined") {
-    notify("Barcode scanner library did not load.", true);
+async function startScanner(mode) {
+  if (scanner || scannerStarting) {
+    notify("A scanner is already active.", true);
     return;
   }
 
-  try {
-    scanning = true;
+  if (typeof Html5Qrcode === "undefined") {
+    notify("Scanner library failed to load.", true);
+    return;
+  }
 
-    scanner = new Html5Qrcode("reader");
+  scannerStarting = true;
+  scannerMode = mode;
+
+  const elementId = mode === "bulk"
+    ? "bulkReader"
+    : "singleReader";
+
+  try {
+    scanner = new Html5Qrcode(elementId);
 
     await scanner.start(
       { facingMode: "environment" },
       {
         fps: 10,
-        qrbox: {
-          width: 250,
-          height: 150
-        }
+        qrbox: { width: 250, height: 150 }
       },
-      decodedText => {
-        document.getElementById("scanBarcode").value =
-          decodedText;
+      decoded => {
+        const barcode = decoded.trim();
 
-        findScannedProduct();
+        if (mode === "single") {
+          $("scanBarcode").value = barcode;
+          findScannedProduct();
 
-        notify("Barcode scanned: " + decodedText);
+          notify("Barcode scanned: " + barcode);
+          stopScanner();
+        } else {
+          const now = Date.now();
 
-        stopScanner();
+          // Avoid rapid duplicate detections.
+          if (
+            barcode === lastScan &&
+            now - lastScanTime < 1800
+          ) return;
+
+          lastScan = barcode;
+          lastScanTime = now;
+
+          addToBulkQueue(barcode);
+        }
       },
       () => {}
     );
 
-    notify("Camera started. Scan a barcode.");
+    notify("Camera is ready.");
   } catch (error) {
     notify("Camera error: " + error.message, true);
     scanner = null;
   } finally {
-    scanning = false;
+    scannerStarting = false;
   }
 }
 
@@ -1260,59 +1556,36 @@ async function stopScanner() {
 }
 
 function findScannedProduct() {
-  const barcode =
-    document.getElementById("scanBarcode").value.trim();
+  const barcode = $("scanBarcode").value.trim();
+  const product = productByBarcode(barcode);
 
-  const product = products.find(
-    p => p.barcode === barcode
-  );
-
-  document.getElementById("scannedInfo").textContent =
-    product
-      ? product.name + " — " + product.quantity + " in stock"
-      : barcode
-        ? "Product not found."
-        : "No product selected.";
+  $("scannedInfo").textContent = product
+    ? product.name + " | " +
+      product.quantity + " in stock | " +
+      product.location
+    : barcode
+      ? "Product not found."
+      : "No product selected.";
 }
 
-// =======================================
-// ADD OR REMOVE STOCK
-// =======================================
+// ========================================
+// SINGLE INVENTORY UPDATE
+// ========================================
 
 async function updateInventory() {
   if (busy) return;
 
-  const barcode =
-    document.getElementById("scanBarcode").value.trim();
+  const barcode = $("scanBarcode").value.trim();
+  const quantity = Number($("stockQuantity").value);
+  const mode = $("stockAction").value;
 
-  const quantity = Number(
-    document.getElementById("stockQuantity").value
-  );
-
-  const mode =
-    document.getElementById("stockAction").value;
-
-  if (!barcode) {
-    notify("Scan or enter a barcode first.", true);
+  if (!productByBarcode(barcode)) {
+    notify("Product not found.", true);
     return;
   }
 
-  if (!Number.isSafeInteger(quantity) || quantity <= 0) {
-    notify("Enter a valid quantity.", true);
-    return;
-  }
-
-  const product = products.find(
-    p => p.barcode === barcode
-  );
-
-  if (!product) {
-    notify("This product is not registered.", true);
-    return;
-  }
-
-  if (mode === "remove" && quantity > product.quantity) {
-    notify("Not enough stock available.", true);
+  if (!validQuantity(quantity)) {
+    notify("Invalid quantity.", true);
     return;
   }
 
@@ -1326,14 +1599,130 @@ async function updateInventory() {
       mode
     });
 
-    products = result.products;
+    applyData(result);
 
-    renderAll();
+    notify("Inventory updated and activity recorded.");
+  } catch (error) {
+    notify(error.message, true);
+  } finally {
+    busy = false;
+  }
+}
+
+// ========================================
+// BULK SCANNING
+// ========================================
+
+function addToBulkQueue(barcode) {
+  if (busy) return;
+
+  const product = productByBarcode(barcode);
+
+  if (!product) {
+    notify("Unregistered barcode: " + barcode, true);
+    return;
+  }
+
+  if (bulkQueue.length >= 20) {
+    notify("Queue is full. Submit these 20 items.", true);
+    return;
+  }
+
+  const quantity = Number($("bulkQuantity").value);
+  const mode = $("bulkMode").value;
+
+  if (!validQuantity(quantity)) {
+    notify("Enter a valid quantity.", true);
+    return;
+  }
+
+  bulkQueue.push({
+    barcode,
+    name: product.name,
+    mode,
+    quantity
+  });
+
+  renderBulkQueue();
+
+  notify(product.name + " added to the queue.");
+}
+
+function addBulkManual() {
+  const barcode = $("bulkBarcode").value.trim();
+
+  addToBulkQueue(barcode);
+  $("bulkBarcode").value = "";
+}
+
+function renderBulkQueue() {
+  const table = $("bulkTable");
+  table.replaceChildren();
+
+  $("queueCount").textContent = bulkQueue.length;
+
+  bulkQueue.forEach((item, index) => {
+    const row = document.createElement("tr");
+
+    cell(row, item.name);
+    cell(row, item.mode === "add" ? "Add" : "Remove");
+    cell(row, item.quantity);
+
+    const td = document.createElement("td");
+    const button = document.createElement("button");
+
+    button.className = "btn red small";
+    button.textContent = "X";
+
+    button.onclick = () => {
+      bulkQueue.splice(index, 1);
+      renderBulkQueue();
+    };
+
+    td.appendChild(button);
+    row.appendChild(td);
+
+    table.appendChild(row);
+  });
+}
+
+function clearBulk() {
+  if (busy) return;
+
+  bulkQueue = [];
+  renderBulkQueue();
+  notify("Bulk queue cleared.");
+}
+
+async function submitBulk() {
+  if (busy) return;
+
+  if (!bulkQueue.length) {
+    notify("Scan products first.", true);
+    return;
+  }
+
+  busy = true;
+
+  try {
+    const result = await request({
+      action: "bulk",
+      items: JSON.stringify(
+        bulkQueue.map(item => ({
+          barcode: item.barcode,
+          mode: item.mode,
+          quantity: item.quantity
+        }))
+      )
+    });
+
+    applyData(result);
+
+    bulkQueue = [];
+    renderBulkQueue();
 
     notify(
-      "Success! " + quantity +
-      (mode === "add" ? " items added." : " items removed.") +
-      " Google Sheets updated."
+      "Bulk update completed! Google Sheets synced."
     );
   } catch (error) {
     notify(error.message, true);
@@ -1342,44 +1731,35 @@ async function updateInventory() {
   }
 }
 
-// =======================================
-// BARCODE GENERATION
-// =======================================
-
-function createBarcodeNumber() {
-  // Unique internal Code128 barcode identifier.
-  // Not an official UPC/EAN retail number.
-  return "SR" +
-    Date.now().toString() +
-    Math.floor(Math.random() * 1000000)
-      .toString().padStart(6, "0");
-}
+// ========================================
+// BARCODE GENERATOR
+// ========================================
 
 function generateNewBarcode() {
   let barcode;
 
   do {
-    barcode = createBarcodeNumber();
-  } while (products.some(p => p.barcode === barcode));
+    barcode = "SR" +
+      Date.now().toString() +
+      Math.floor(Math.random() * 1000000)
+        .toString().padStart(6, "0");
+  } while (productByBarcode(barcode));
 
-  document.getElementById("newBarcode").value =
-    barcode;
-
+  $("newBarcode").value = barcode;
   previewNewBarcode();
 }
 
-function drawBarcode(canvasId, barcode, name = "") {
-  const canvas = document.getElementById(canvasId);
+function drawBarcode(canvasId, barcode) {
+  const canvas = $(canvasId);
 
   if (!barcode) {
     const ctx = canvas.getContext("2d");
-
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     return false;
   }
 
   if (typeof JsBarcode === "undefined") {
-    notify("Barcode generator library did not load.", true);
+    notify("Barcode library did not load.", true);
     return false;
   }
 
@@ -1387,12 +1767,10 @@ function drawBarcode(canvasId, barcode, name = "") {
     JsBarcode(canvas, barcode, {
       format: "CODE128",
       displayValue: true,
-      fontSize: 16,
       height: 85,
       width: 2,
       margin: 15,
-      background: "#ffffff",
-      lineColor: "#000000"
+      fontSize: 16
     });
 
     return true;
@@ -1403,58 +1781,49 @@ function drawBarcode(canvasId, barcode, name = "") {
 }
 
 function previewNewBarcode() {
-  const barcode =
-    document.getElementById("newBarcode").value.trim();
-
-  const name =
-    document.getElementById("newName").value.trim();
-
-  drawBarcode("newBarcodeCanvas", barcode, name);
+  drawBarcode(
+    "newBarcodeCanvas",
+    $("newBarcode").value.trim()
+  );
 }
 
-document.getElementById("newName")
-  .addEventListener("input", previewNewBarcode);
-
-// =======================================
-// PRODUCT REGISTRATION
-// =======================================
+// ========================================
+// REGISTER PRODUCT
+// ========================================
 
 async function registerProduct() {
   if (busy) return;
 
-  const name =
-    document.getElementById("newName").value.trim();
+  const name = $("newName").value.trim();
+  const category =
+    $("newCategory").value.trim() || "Other";
+  const location =
+    $("newLocation").value.trim() || "Not Assigned";
+  const quantity = Number($("newQuantity").value);
 
-  const quantity = Number(
-    document.getElementById("newQuantity").value
-  );
-
-  let barcode =
-    document.getElementById("newBarcode").value.trim();
+  let barcode = $("newBarcode").value.trim();
 
   if (!name) {
     notify("Enter a product name.", true);
     return;
   }
 
-  if (!Number.isSafeInteger(quantity) || quantity < 0) {
-    notify("Enter a valid starting quantity.", true);
+  if (!validQuantity(quantity, true)) {
+    notify("Invalid starting quantity.", true);
     return;
   }
 
   if (!barcode) {
     generateNewBarcode();
-
-    barcode =
-      document.getElementById("newBarcode").value.trim();
+    barcode = $("newBarcode").value.trim();
   }
 
-  if (products.some(p => p.barcode === barcode)) {
-    notify("This barcode is already registered.", true);
+  if (productByBarcode(barcode)) {
+    notify("Barcode already registered.", true);
     return;
   }
 
-  if (!drawBarcode("newBarcodeCanvas", barcode, name)) {
+  if (!drawBarcode("newBarcodeCanvas", barcode)) {
     return;
   }
 
@@ -1465,31 +1834,28 @@ async function registerProduct() {
       action: "register",
       barcode,
       name,
+      category,
+      location,
       quantity
     });
 
-    products = result.products;
-
-    renderAll();
+    applyData(result);
 
     latestBarcode = barcode;
     latestName = name;
 
-    drawBarcode(
-      "modalBarcodeCanvas",
-      barcode,
-      name
-    );
+    drawBarcode("modalBarcodeCanvas", barcode);
 
-    document.getElementById("downloadModal")
-      .classList.add("show");
+    $("downloadModal").classList.add("show");
 
-    document.getElementById("newName").value = "";
-    document.getElementById("newQuantity").value = "0";
-    document.getElementById("newBarcode").value = "";
+    $("newName").value = "";
+    $("newCategory").value = "";
+    $("newLocation").value = "";
+    $("newQuantity").value = "0";
+    $("newBarcode").value = "";
 
     notify(
-      "Product successfully saved to Google Sheets!"
+      "Product created! Download your barcode label."
     );
   } catch (error) {
     notify(error.message, true);
@@ -1498,19 +1864,18 @@ async function registerProduct() {
   }
 }
 
-// =======================================
-// DOWNLOAD BARCODE PNG
-// =======================================
+// ========================================
+// DOWNLOAD AND PRINT BARCODE
+// ========================================
 
 function makeLabelCanvas(barcode, name) {
   const canvas = document.createElement("canvas");
-
   canvas.width = 800;
   canvas.height = 360;
 
   const ctx = canvas.getContext("2d");
 
-  ctx.fillStyle = "#ffffff";
+  ctx.fillStyle = "white";
   ctx.fillRect(0, 0, 800, 360);
 
   ctx.fillStyle = "#111827";
@@ -1519,50 +1884,45 @@ function makeLabelCanvas(barcode, name) {
 
   ctx.fillText(name || "Inventory Product", 400, 45, 760);
 
-  const barcodeCanvas = document.createElement("canvas");
+  const temp = document.createElement("canvas");
 
-  JsBarcode(barcodeCanvas, barcode, {
+  JsBarcode(temp, barcode, {
     format: "CODE128",
     displayValue: true,
-    fontSize: 18,
     width: 2,
     height: 110,
+    fontSize: 18,
     margin: 15
   });
 
-  const availableWidth = 740;
-  const scale = Math.min(
-    1,
-    availableWidth / barcodeCanvas.width
-  );
+  const scale = Math.min(1, 740 / temp.width);
 
-  const drawWidth = barcodeCanvas.width * scale;
-  const drawHeight = barcodeCanvas.height * scale;
+  const width = temp.width * scale;
+  const height = temp.height * scale;
 
   ctx.drawImage(
-    barcodeCanvas,
-    (800 - drawWidth) / 2,
-    85,
-    drawWidth,
-    drawHeight
+    temp,
+    (800 - width) / 2,
+    80,
+    width,
+    height
   );
 
   ctx.font = "16px Arial";
   ctx.fillStyle = "#64748b";
-  ctx.fillText("STOCKROOM PRO INVENTORY", 400, 315);
+  ctx.fillText("STOCKROOM PRO INVENTORY", 400, 320);
 
   return canvas;
 }
 
 function downloadBarcode(barcode, name) {
   if (!barcode) {
-    notify("Select or generate a barcode first.", true);
+    notify("Select a barcode first.", true);
     return;
   }
 
   try {
     const canvas = makeLabelCanvas(barcode, name);
-
     const link = document.createElement("a");
 
     link.download =
@@ -1576,53 +1936,37 @@ function downloadBarcode(barcode, name) {
     link.click();
     link.remove();
 
-    notify("Barcode PNG download started.");
+    notify("Barcode download started.");
   } catch (error) {
-    notify("Download failed: " + error.message, true);
+    notify(error.message, true);
   }
 }
 
 function downloadNewBarcode() {
-  const barcode =
-    document.getElementById("newBarcode").value.trim();
-
-  const name =
-    document.getElementById("newName").value.trim();
-
-  downloadBarcode(barcode, name);
+  downloadBarcode(
+    $("newBarcode").value.trim(),
+    $("newName").value.trim()
+  );
 }
 
 function downloadModalBarcode() {
   downloadBarcode(latestBarcode, latestName);
 }
 
-// =======================================
-// EXISTING BARCODE LABELS
-// =======================================
-
 function populateBarcodeSelect() {
-  const select =
-    document.getElementById("barcodeSelect");
-
+  const select = $("barcodeSelect");
   const selected = select.value;
 
   select.replaceChildren();
-
-  const first = document.createElement("option");
-  first.value = "";
-  first.textContent = "Select a product";
-  select.appendChild(first);
+  select.appendChild(new Option("Select Product", ""));
 
   products.forEach(product => {
-    const option = document.createElement("option");
-
-    option.value = product.barcode;
-    option.textContent = product.name;
-
-    select.appendChild(option);
+    select.appendChild(
+      new Option(product.name, product.barcode)
+    );
   });
 
-  if (products.some(p => p.barcode === selected)) {
+  if (productByBarcode(selected)) {
     select.value = selected;
   }
 
@@ -1630,26 +1974,15 @@ function populateBarcodeSelect() {
 }
 
 function previewExistingBarcode() {
-  const barcode =
-    document.getElementById("barcodeSelect").value;
-
-  const product = products.find(
-    p => p.barcode === barcode
-  );
-
   drawBarcode(
     "existingBarcodeCanvas",
-    barcode,
-    product?.name || ""
+    $("barcodeSelect").value
   );
 }
 
 function downloadExistingBarcode() {
-  const barcode =
-    document.getElementById("barcodeSelect").value;
-
-  const product = products.find(
-    p => p.barcode === barcode
+  const product = productByBarcode(
+    $("barcodeSelect").value
   );
 
   if (!product) {
@@ -1660,10 +1993,6 @@ function downloadExistingBarcode() {
   downloadBarcode(product.barcode, product.name);
 }
 
-// =======================================
-// PRINT BARCODE
-// =======================================
-
 function printBarcode(barcode, name) {
   if (!barcode) {
     notify("Select a barcode first.", true);
@@ -1672,11 +2001,10 @@ function printBarcode(barcode, name) {
 
   const canvas = makeLabelCanvas(barcode, name);
   const image = canvas.toDataURL("image/png");
-
   const popup = window.open("", "_blank");
 
   if (!popup) {
-    notify("Allow pop-ups to print the barcode.", true);
+    notify("Allow pop-ups to print labels.", true);
     return;
   }
 
@@ -1684,18 +2012,11 @@ function printBarcode(barcode, name) {
     <!DOCTYPE html>
     <html>
     <head>
-      <title>Print Barcode</title>
-      <style>
-        body {
-          text-align: center;
-          font-family: Arial;
-          padding: 20px;
-        }
-        img {
-          max-width: 100%;
-          width: 600px;
-        }
-      </style>
+    <title>Print Barcode</title>
+    <style>
+      body { text-align: center; padding: 20px; }
+      img { max-width: 100%; width: 600px; }
+    </style>
     </head>
     <body>
       <img src="${image}" onload="window.print()">
@@ -1706,12 +2027,13 @@ function printBarcode(barcode, name) {
   popup.document.close();
 }
 
-function printExistingBarcode() {
-  const barcode =
-    document.getElementById("barcodeSelect").value;
+function printModalBarcode() {
+  printBarcode(latestBarcode, latestName);
+}
 
-  const product = products.find(
-    p => p.barcode === barcode
+function printExistingBarcode() {
+  const product = productByBarcode(
+    $("barcodeSelect").value
   );
 
   if (!product) {
@@ -1722,52 +2044,285 @@ function printExistingBarcode() {
   printBarcode(product.barcode, product.name);
 }
 
-function printModalBarcode() {
-  printBarcode(latestBarcode, latestName);
-}
-
 function closeModal() {
-  document.getElementById("downloadModal")
-    .classList.remove("show");
+  $("downloadModal").classList.remove("show");
 }
 
-// =======================================
-// SETTINGS
-// =======================================
+// ========================================
+// ACTIVITY HISTORY
+// ========================================
 
-function savePreferences() {
-  const value = Number(
-    document.getElementById("lowStockLevel").value
+function filteredHistory() {
+  const search = $("historySearch")
+    .value.toLowerCase();
+
+  const action = $("historyFilter").value;
+
+  return history.filter(item => {
+    const matchesSearch =
+      item.name.toLowerCase().includes(search) ||
+      item.barcode.toLowerCase().includes(search);
+
+    const matchesAction =
+      !action || item.action === action;
+
+    return matchesSearch && matchesAction;
+  });
+}
+
+function renderHistory() {
+  const table = $("historyTable");
+  table.replaceChildren();
+
+  filteredHistory().forEach(item => {
+    const row = document.createElement("tr");
+
+    cell(row, item.time);
+    cell(row, item.name);
+    cell(row, item.action);
+
+    const sign = item.change > 0 ? "+" : "";
+    cell(row, sign + item.change);
+
+    cell(row, item.quantity);
+
+    table.appendChild(row);
+  });
+}
+
+function exportHistory() {
+  const rows = [
+    [
+      "Date",
+      "Barcode",
+      "Product",
+      "Action",
+      "Change",
+      "New Quantity"
+    ]
+  ];
+
+  filteredHistory().forEach(item => {
+    rows.push([
+      item.time,
+      item.barcode,
+      item.name,
+      item.action,
+      item.change,
+      item.quantity
+    ]);
+  });
+
+  function csvValue(value) {
+    let str = String(value);
+
+    // Keep exported values from becoming spreadsheet formulas.
+    if (/^[=+\-@\t\r]/.test(str)) {
+      str = "'" + str;
+    }
+
+    return '"' + str.replace(/"/g, '""') + '"';
+  }
+
+  const csv = rows.map(row =>
+    row.map(csvValue).join(",")
+  ).join("\r\n");
+
+  const blob = new Blob([csv], {
+    type: "text/csv;charset=utf-8"
+  });
+
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+
+  link.href = url;
+  link.download = "StockRoom-Activity.csv";
+
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+// ========================================
+// ANALYTICS AND CHARTS
+// ========================================
+
+function renderAnalytics() {
+  const added = history
+    .filter(h => h.action === "ADD")
+    .reduce((sum, h) => sum + h.change, 0);
+
+  const removed = history
+    .filter(h => h.action === "REMOVE")
+    .reduce((sum, h) => sum + Math.abs(h.change), 0);
+
+  const categories = new Set(
+    products.map(p => p.category)
   );
 
-  if (!Number.isSafeInteger(value) || value < 1) {
-    notify("Enter a valid low-stock level.", true);
+  $("addedTotal").textContent = added;
+  $("removedTotal").textContent = removed;
+  $("categoryCount").textContent = categories.size;
+  $("activityCount").textContent = history.length;
+}
+
+function renderCharts() {
+  if (typeof Chart === "undefined") {
+    notify("Chart library could not load.", true);
     return;
   }
 
-  lowLevel = value;
+  if (categoryChart) categoryChart.destroy();
+  if (movementChart) movementChart.destroy();
 
-  localStorage.setItem("stockroom_low", lowLevel);
+  // Inventory by category
+  const categoryTotals = {};
 
-  renderAll();
+  products.forEach(p => {
+    categoryTotals[p.category] =
+      (categoryTotals[p.category] || 0) + p.quantity;
+  });
 
-  notify("Inventory preferences saved.");
+  const names = Object.keys(categoryTotals);
+  const values = Object.values(categoryTotals);
+
+  categoryChart = new Chart(
+    $("categoryChart"),
+    {
+      type: "doughnut",
+      data: {
+        labels: names,
+        datasets: [{
+          data: values,
+          backgroundColor: [
+            "#2563eb",
+            "#16a34a",
+            "#f59e0b",
+            "#8b5cf6",
+            "#ef4444",
+            "#06b6d4",
+            "#64748b"
+          ]
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false
+      }
+    }
+  );
+
+  // Stock movement over the last 7 days
+  const dates = [];
+
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date();
+    d.setHours(12, 0, 0, 0);
+    d.setDate(d.getDate() - i);
+
+    const key = [
+      d.getFullYear(),
+      String(d.getMonth() + 1).padStart(2, "0"),
+      String(d.getDate()).padStart(2, "0")
+    ].join("-");
+
+    dates.push(key);
+  }
+
+  const addedByDay = dates.map(date =>
+    history
+      .filter(h =>
+        h.date === date && h.action === "ADD"
+      )
+      .reduce((sum, h) => sum + h.change, 0)
+  );
+
+  const removedByDay = dates.map(date =>
+    history
+      .filter(h =>
+        h.date === date && h.action === "REMOVE"
+      )
+      .reduce(
+        (sum, h) => sum + Math.abs(h.change), 0
+      )
+  );
+
+  movementChart = new Chart(
+    $("movementChart"),
+    {
+      type: "bar",
+      data: {
+        labels: dates.map(d => d.slice(5)),
+        datasets: [
+          {
+            label: "Stock Added",
+            data: addedByDay,
+            backgroundColor: "#16a34a"
+          },
+          {
+            label: "Stock Removed",
+            data: removedByDay,
+            backgroundColor: "#dc2626"
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: { precision: 0 }
+          }
+        }
+      }
+    }
+  );
 }
 
-// =======================================
-// RENDER EVERYTHING
-// =======================================
+// ========================================
+// SETTINGS
+// ========================================
+
+function savePreferences() {
+  const level = Number($("lowStockLevel").value);
+
+  if (!validQuantity(level)) {
+    notify("Invalid warning level.", true);
+    return;
+  }
+
+  lowLevel = level;
+  localStorage.setItem("stockroom_low", level);
+
+  renderAll();
+  notify("Preferences saved.");
+}
+
+// ========================================
+// RENDER ALL
+// ========================================
 
 function renderAll() {
   renderDashboard();
+  populateFilters();
   renderInventory();
   populateBarcodeSelect();
+  renderHistory();
+  renderAnalytics();
+  renderBulkQueue();
   findScannedProduct();
+
+  if ($("analytics").classList.contains("active")) {
+    renderCharts();
+  }
 }
 
-// =======================================
-// INITIALIZE
-// =======================================
+// ========================================
+// START WEBSITE
+// ========================================
 
 renderAll();
 
@@ -1776,7 +2331,6 @@ if (API) {
 } else {
   navigate("settings");
 }
-
 </script>
 
 </body>

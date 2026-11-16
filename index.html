@@ -3,9 +3,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport"
-      content="width=device-width, initial-scale=1">
-
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>StockRoom Pro 2.0</title>
 
 <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
@@ -14,2324 +12,811 @@
 
 <style>
 :root {
-  --navy: #0f172a;
-  --sidebar: #111c33;
-  --blue: #2563eb;
-  --green: #16a34a;
-  --red: #dc2626;
-  --bg: #f1f5f9;
-  --border: #e2e8f0;
-  --muted: #64748b;
-  --text: #1e293b;
+  --dark:#0f172a;
+  --blue:#2563eb;
+  --green:#16a34a;
+  --red:#dc2626;
+  --bg:#f1f5f9;
+  --line:#e2e8f0;
+  --muted:#64748b;
 }
-
-* {
-  box-sizing: border-box;
-}
-
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: var(--bg);
-  color: var(--text);
-}
-
-button, input, select {
-  font: inherit;
-}
-
-button {
-  cursor: pointer;
-}
-
+* {box-sizing:border-box}
+body {margin:0;font-family:Arial,sans-serif;background:var(--bg);color:#1e293b}
+button,input,select {font:inherit}
+button {cursor:pointer}
 .sidebar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 245px;
-  height: 100vh;
-  background: var(--sidebar);
-  color: white;
-  padding: 25px 15px;
-  overflow-y: auto;
+  position:fixed;top:0;left:0;width:235px;height:100vh;
+  overflow:auto;background:var(--dark);color:white;padding:22px 12px;
 }
-
-.brand {
-  font-size: 24px;
-  font-weight: 800;
-  padding: 8px 12px 30px;
-}
-
-.brand span {
-  color: #60a5fa;
-}
-
+.brand {font-size:23px;font-weight:bold;padding:12px;margin-bottom:20px}
+.brand span {color:#60a5fa}
 .nav {
-  background: transparent;
-  border: none;
-  color: #cbd5e1;
-  width: 100%;
-  text-align: left;
-  padding: 14px;
-  margin-bottom: 5px;
-  border-radius: 8px;
-  font-size: 14px;
+  display:block;width:100%;border:0;border-radius:8px;
+  padding:13px;text-align:left;background:transparent;
+  color:#cbd5e1;margin-bottom:4px;
 }
-
-.nav:hover,
-.nav.active {
-  background: #1d4ed8;
-  color: white;
+.nav.active,.nav:hover {background:#1d4ed8;color:white}
+main {margin-left:235px;padding:28px}
+.topbar {display:flex;justify-content:space-between;align-items:center;gap:12px}
+h1 {margin:0 0 8px}
+.muted {color:var(--muted);font-size:13px}
+.connection {background:#fee2e2;color:#991b1b;padding:10px;border-radius:20px;font-size:12px}
+.connection.online {background:#dcfce7;color:#166534}
+.page {display:none}
+.page.active {display:block}
+.stats {display:grid;grid-template-columns:repeat(4,1fr);gap:15px;margin:22px 0}
+.stat,.panel {
+  background:white;border:1px solid var(--line);
+  border-radius:12px;padding:22px;margin-bottom:18px;
 }
-
-.main {
-  margin-left: 245px;
-  padding: 30px;
-  max-width: 1700px;
-}
-
-.topbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 15px;
-  margin-bottom: 25px;
-}
-
-.topbar h1 {
-  margin: 0;
-  font-size: 27px;
-}
-
-.subtitle {
-  color: var(--muted);
-  margin-top: 7px;
-  font-size: 14px;
-}
-
-.connected {
-  padding: 10px 14px;
-  border-radius: 30px;
-  background: #fee2e2;
-  color: #991b1b;
-  font-size: 12px;
-  font-weight: bold;
-}
-
-.connected.online {
-  background: #dcfce7;
-  color: #166534;
-}
-
-.page {
-  display: none;
-}
-
-.page.active {
-  display: block;
-}
-
-.stats {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 16px;
-  margin-bottom: 22px;
-}
-
-.stat {
-  background: white;
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 22px;
-}
-
-.stat small {
-  color: var(--muted);
-}
-
-.stat h2 {
-  margin: 12px 0 0;
-  font-size: 30px;
-}
-
-.panel {
-  background: white;
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 24px;
-  margin-bottom: 20px;
-}
-
-.panel h2 {
-  margin: 0 0 12px;
-  font-size: 20px;
-}
-
-.panel p {
-  color: var(--muted);
-  line-height: 1.5;
-}
-
-.grid2 {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-}
-
-.field {
-  margin-bottom: 14px;
-}
-
-.field label {
-  display: block;
-  font-weight: bold;
-  font-size: 13px;
-  margin-bottom: 7px;
-}
-
-input, select {
-  width: 100%;
-  padding: 12px;
-  border: 1px solid #cbd5e1;
-  border-radius: 8px;
-  background: white;
-}
-
-input:focus, select:focus {
-  outline: none;
-  border-color: var(--blue);
-}
-
+.stat strong {display:block;font-size:29px;margin-top:10px}
+.stat small {color:var(--muted)}
+.grid {display:grid;grid-template-columns:1fr 1fr;gap:18px}
+label {display:block;font-weight:bold;font-size:13px;margin:14px 0 7px}
+input,select {width:100%;padding:12px;border:1px solid #cbd5e1;border-radius:8px;background:white}
 .btn {
-  padding: 12px 17px;
-  border: none;
-  background: var(--blue);
-  color: white;
-  border-radius: 8px;
-  font-weight: bold;
-  font-size: 14px;
+  border:0;border-radius:8px;padding:12px 16px;
+  background:var(--blue);color:white;font-weight:bold;margin:5px 4px 5px 0;
 }
-
-.btn:hover {
-  filter: brightness(0.92);
-}
-
-.btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.btn.green {
-  background: var(--green);
-}
-
-.btn.red {
-  background: var(--red);
-}
-
-.btn.dark {
-  background: #334155;
-}
-
-.btn.gray {
-  background: #e2e8f0;
-  color: #334155;
-}
-
-.btn.full {
-  width: 100%;
-  margin: 5px 0;
-}
-
-.btn.small {
-  font-size: 12px;
-  padding: 8px 12px;
-}
-
-.actions {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-  margin: 14px 0;
-}
-
-.message {
-  display: none;
-  padding: 15px;
-  margin-bottom: 20px;
-  border-radius: 8px;
-  background: #dbeafe;
-  color: #1e40af;
-  font-size: 14px;
-}
-
-.message.error {
-  background: #fee2e2;
-  color: #991b1b;
-}
-
-.tablewrap {
-  overflow-x: auto;
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-  text-align: left;
-}
-
-th, td {
-  padding: 13px;
-  border-bottom: 1px solid var(--border);
-  font-size: 13px;
-}
-
-th {
-  background: #f8fafc;
-  color: #475569;
-  white-space: nowrap;
-}
-
-.status {
-  padding: 6px 10px;
-  border-radius: 30px;
-  font-weight: bold;
-  font-size: 11px;
-  white-space: nowrap;
-}
-
-.status.good {
-  background: #dcfce7;
-  color: #166534;
-}
-
-.status.low {
-  background: #fef3c7;
-  color: #92400e;
-}
-
-.status.out {
-  background: #fee2e2;
-  color: #991b1b;
-}
-
-.scanbox {
-  width: 100%;
-  max-width: 520px;
-  margin: 15px auto;
-}
-
-.barcode-box {
-  background: #f8fafc;
-  padding: 22px;
-  border: 1px dashed #94a3b8;
-  border-radius: 10px;
-  text-align: center;
-  overflow-x: auto;
-}
-
-.barcode-box canvas {
-  max-width: 100%;
-  height: auto;
-}
-
-.chartbox {
-  height: 300px;
-  position: relative;
-}
-
-.alert {
-  border-left: 4px solid #f59e0b;
-  background: #fffbeb;
-  padding: 12px;
-  margin-bottom: 9px;
-  border-radius: 5px;
-  font-size: 13px;
-}
-
-.muted {
-  color: var(--muted);
-  font-size: 13px;
-}
-
+.btn.green {background:var(--green)}
+.btn.red {background:var(--red)}
+.btn.dark {background:#334155}
+.btn.full {width:100%}
+.btn:disabled {opacity:.5;cursor:not-allowed}
+.tablewrap {overflow:auto}
+table {width:100%;border-collapse:collapse}
+th,td {text-align:left;padding:12px;border-bottom:1px solid var(--line);font-size:13px}
+th {background:#f8fafc}
+.status {padding:6px 9px;border-radius:20px;font-size:11px;font-weight:bold;white-space:nowrap}
+.good {background:#dcfce7;color:#166534}
+.low {background:#fef3c7;color:#92400e}
+.out {background:#fee2e2;color:#991b1b}
+#message {display:none;padding:14px;background:#dbeafe;color:#1e40af;border-radius:8px;margin:20px 0}
+#message.error {background:#fee2e2;color:#991b1b}
+.reader {max-width:500px;margin:15px auto}
+.preview {text-align:center;background:#f8fafc;border:1px dashed #94a3b8;padding:15px;overflow:auto}
+.preview canvas,.modal canvas {max-width:100%;height:auto}
+.chart {height:300px;position:relative}
 .modal {
-  position: fixed;
-  inset: 0;
-  background: #0009;
-  z-index: 1000;
-  padding: 20px;
-  display: none;
-  align-items: center;
-  justify-content: center;
+  display:none;position:fixed;inset:0;background:#0009;
+  align-items:center;justify-content:center;padding:20px;z-index:999;
 }
-
-.modal.show {
-  display: flex;
+.modal.show {display:flex}
+.modal-body {background:white;border-radius:14px;padding:25px;width:100%;max-width:460px;text-align:center}
+.alert {padding:10px;background:#fffbeb;border-left:4px solid orange;margin:8px 0}
+@media(max-width:950px) {
+  .stats {grid-template-columns:repeat(2,1fr)}
+  .grid {grid-template-columns:1fr}
 }
-
-.modal-body {
-  width: 100%;
-  max-width: 490px;
-  padding: 28px;
-  background: white;
-  border-radius: 15px;
-  text-align: center;
-}
-
-.modal-body canvas {
-  max-width: 100%;
-  height: auto;
-}
-
-@media(max-width: 1100px) {
-  .stats {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .grid2 {
-    grid-template-columns: 1fr;
-  }
-}
-
-@media(max-width: 750px) {
-  .sidebar {
-    position: static;
-    height: auto;
-    width: 100%;
-    padding: 12px;
-  }
-
-  .brand {
-    padding: 10px;
-  }
-
-  .nav {
-    width: auto;
-    display: inline-block;
-    padding: 10px;
-    font-size: 12px;
-  }
-
-  .main {
-    margin-left: 0;
-    padding: 15px;
-  }
-
-  .topbar {
-    align-items: flex-start;
-    flex-direction: column;
-  }
-
-  .stat {
-    padding: 16px;
-  }
-
-  .stat h2 {
-    font-size: 24px;
-  }
-
-  .panel {
-    padding: 17px;
-  }
+@media(max-width:700px) {
+  .sidebar {position:static;width:100%;height:auto}
+  .brand {margin-bottom:5px}
+  .nav {display:inline-block;width:auto;font-size:12px;padding:9px}
+  main {margin:0;padding:14px}
+  .topbar {align-items:flex-start;flex-direction:column}
 }
 </style>
 </head>
-
 <body>
-
-<!-- SIDEBAR -->
 
 <aside class="sidebar">
   <div class="brand">StockRoom <span>Pro</span></div>
-
-  <button class="nav active"
-    onclick="navigate('dashboard',this)">
-    Dashboard
-  </button>
-
-  <button class="nav"
-    onclick="navigate('inventory',this)">
-    Inventory
-  </button>
-
-  <button class="nav"
-    onclick="navigate('scanner',this)">
-    Barcode Scanner
-  </button>
-
-  <button class="nav"
-    onclick="navigate('bulk',this)">
-    Bulk Scanning
-  </button>
-
-  <button class="nav"
-    onclick="navigate('products',this)">
-    Add Product
-  </button>
-
-  <button class="nav"
-    onclick="navigate('barcodes',this)">
-    Barcode Labels
-  </button>
-
-  <button class="nav"
-    onclick="navigate('activity',this)">
-    Activity History
-  </button>
-
-  <button class="nav"
-    onclick="navigate('analytics',this)">
-    Analytics
-  </button>
-
-  <button class="nav"
-    onclick="navigate('settings',this)">
-    Settings
-  </button>
+  <button class="nav active" onclick="navigate('dashboard',this)">Dashboard</button>
+  <button class="nav" onclick="navigate('inventory',this)">Inventory</button>
+  <button class="nav" onclick="navigate('scanner',this)">Barcode Scanner</button>
+  <button class="nav" onclick="navigate('bulk',this)">Bulk Scanning</button>
+  <button class="nav" onclick="navigate('products',this)">Add Product</button>
+  <button class="nav" onclick="navigate('barcodes',this)">Barcode Labels</button>
+  <button class="nav" onclick="navigate('activity',this)">Activity History</button>
+  <button class="nav" onclick="navigate('analytics',this)">Analytics</button>
+  <button class="nav" onclick="navigate('settings',this)">Settings</button>
 </aside>
 
-<main class="main">
-
-<div class="topbar">
-  <div>
-    <h1 id="pageTitle">Dashboard</h1>
-    <div class="subtitle">
-      Inventory management and tracking
+<main>
+  <div class="topbar">
+    <div>
+      <h1 id="pageTitle">Dashboard</h1>
+      <div class="muted">Inventory Management System • Version 2.0</div>
     </div>
+    <div class="connection" id="connection">Not Connected</div>
   </div>
+  <div id="message" role="status"></div>
 
-  <div id="connection" class="connected">
-    Not Connected
-  </div>
-</div>
-
-<div id="message" class="message"></div>
-
-<!-- DASHBOARD -->
-
-<section class="page active" id="dashboard">
-
-<div class="stats">
-  <div class="stat">
-    <small>Total Products</small>
-    <h2 id="totalProducts">0</h2>
-  </div>
-
-  <div class="stat">
-    <small>Total Items</small>
-    <h2 id="totalStock">0</h2>
-  </div>
-
-  <div class="stat">
-    <small>Low Stock</small>
-    <h2 id="lowStock">0</h2>
-  </div>
-
-  <div class="stat">
-    <small>Out of Stock</small>
-    <h2 id="outStock">0</h2>
-  </div>
-</div>
-
-<div class="grid2">
-
-  <div class="panel">
-    <h2>Quick Actions</h2>
-
-    <button class="btn full"
-      onclick="navigate('scanner')">
-      Scan Barcode
-    </button>
-
-    <button class="btn green full"
-      onclick="navigate('products')">
-      Register Product
-    </button>
-
-    <button class="btn dark full"
-      onclick="navigate('bulk')">
-      Bulk Scan Products
-    </button>
-
-    <button class="btn gray full"
-      onclick="loadInventory()">
-      Refresh Inventory
-    </button>
-  </div>
-
-  <div class="panel">
-    <h2>Inventory Alerts</h2>
-    <div id="alerts">No data loaded.</div>
-  </div>
-
-</div>
-
-<div class="panel">
-  <h2>Inventory Overview</h2>
-  <div class="tablewrap">
-    <table>
-      <thead>
-        <tr>
-          <th>Product</th>
-          <th>Category</th>
-          <th>Location</th>
-          <th>Stock</th>
-          <th>Status</th>
-        </tr>
-      </thead>
-      <tbody id="dashboardTable"></tbody>
-    </table>
-  </div>
-</div>
-
-</section>
-
-<!-- INVENTORY -->
-
-<section class="page" id="inventory">
-
-<div class="panel">
-  <h2>All Inventory</h2>
-
-  <div class="grid2">
-    <div class="field">
-      <label>Search Products</label>
-      <input id="inventorySearch"
-        placeholder="Name or barcode"
-        oninput="renderInventory()">
+  <section class="page active" id="dashboard">
+    <div class="stats">
+      <div class="stat"><small>Total Products</small><strong id="totalProducts">0</strong></div>
+      <div class="stat"><small>Total Items</small><strong id="totalStock">0</strong></div>
+      <div class="stat"><small>Low Stock</small><strong id="lowStock">0</strong></div>
+      <div class="stat"><small>Out of Stock</small><strong id="outStock">0</strong></div>
     </div>
+    <div class="grid">
+      <div class="panel">
+        <h2>Quick Actions</h2>
+        <button class="btn full" onclick="navigate('scanner')">Scan Barcode</button>
+        <button class="btn green full" onclick="navigate('products')">Register Product</button>
+        <button class="btn dark full" onclick="navigate('bulk')">Bulk Scanning</button>
+        <button class="btn full" onclick="loadInventory()">Refresh Inventory</button>
+      </div>
+      <div class="panel">
+        <h2>Stock Alerts</h2>
+        <div id="alerts">Connect to Google Sheets.</div>
+      </div>
+    </div>
+    <div class="panel">
+      <h2>Inventory Overview</h2>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>Product</th><th>Category</th><th>Location</th><th>Quantity</th><th>Status</th></tr></thead>
+          <tbody id="dashboardTable"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
 
-    <div class="field">
-      <label>Filter Category</label>
-      <select id="categoryFilter"
-        onchange="renderInventory()">
-        <option value="">All Categories</option>
+  <section class="page" id="inventory">
+    <div class="panel">
+      <h2>All Inventory</h2>
+      <div class="grid">
+        <div><label>Search</label><input id="inventorySearch" placeholder="Product, barcode, or location" oninput="renderInventory()"></div>
+        <div><label>Category</label><select id="categoryFilter" onchange="renderInventory()"><option value="">All Categories</option></select></div>
+      </div>
+      <button class="btn" onclick="loadInventory()">Refresh</button>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>Barcode</th><th>Product</th><th>Category</th><th>Location</th><th>Stock</th><th>Status</th><th>Action</th></tr></thead>
+          <tbody id="inventoryTable"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="page" id="scanner">
+    <div class="grid">
+      <div class="panel">
+        <h2>Camera Scanner</h2>
+        <p class="muted">Scan a registered product barcode.</p>
+        <div id="singleReader" class="reader"></div>
+        <button class="btn" onclick="startScanner('single')">Open Camera</button>
+        <button class="btn dark" onclick="stopScanner()">Stop Camera</button>
+      </div>
+      <div class="panel">
+        <h2>Update Stock</h2>
+        <label>Barcode</label>
+        <input id="scanBarcode" oninput="findScannedProduct()" placeholder="Scan or enter barcode">
+        <p id="scannedInfo">No product selected.</p>
+        <label>Action</label>
+        <select id="stockAction"><option value="add">Add Stock (+)</option><option value="remove">Remove Stock (-)</option></select>
+        <label>Quantity</label>
+        <input id="stockQuantity" type="number" min="1" step="1" value="1">
+        <button class="btn green full" onclick="updateInventory()">Save Stock Change</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="page" id="bulk">
+    <div class="grid">
+      <div class="panel">
+        <h2>Bulk Barcode Scanning</h2>
+        <p class="muted">Scan multiple products without restarting the camera. Repeated scans are briefly ignored to prevent accidental duplicates.</p>
+        <div id="bulkReader" class="reader"></div>
+        <button class="btn" onclick="startScanner('bulk')">Start Camera</button>
+        <button class="btn dark" onclick="stopScanner()">Stop Camera</button>
+        <label>Manual Barcode</label>
+        <input id="bulkBarcode" placeholder="Enter product barcode">
+        <label>Action</label>
+        <select id="bulkMode"><option value="add">Add Stock</option><option value="remove">Remove Stock</option></select>
+        <label>Quantity Per Scan</label>
+        <input id="bulkQuantity" type="number" min="1" step="1" value="1">
+        <button class="btn full" onclick="addBulkManual()">Add to Queue</button>
+      </div>
+      <div class="panel">
+        <h2>Pending Changes (<span id="queueCount">0</span>/20)</h2>
+        <div class="tablewrap">
+          <table>
+            <thead><tr><th>Product</th><th>Action</th><th>Qty</th><th>Remove</th></tr></thead>
+            <tbody id="bulkTable"></tbody>
+          </table>
+        </div>
+        <button class="btn green full" onclick="submitBulk()">Submit All Changes</button>
+        <button class="btn red full" onclick="clearBulk()">Clear Queue</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="page" id="products">
+    <div class="grid">
+      <div class="panel">
+        <h2>Register Product</h2>
+        <label>Product Name</label>
+        <input id="newName" placeholder="Blue T-Shirt">
+        <label>Category</label>
+        <input id="newCategory" list="categories" placeholder="Clothing">
+        <datalist id="categories">
+          <option value="Clothing"><option value="Electronics">
+          <option value="Food"><option value="Supplies">
+          <option value="Tools"><option value="Other">
+        </datalist>
+        <label>Storage Location</label>
+        <input id="newLocation" placeholder="Shelf A1">
+        <label>Starting Quantity</label>
+        <input id="newQuantity" type="number" min="0" step="1" value="0">
+        <label>Barcode</label>
+        <input id="newBarcode" oninput="previewNewBarcode()" placeholder="Generate or type barcode">
+        <button class="btn dark full" onclick="generateNewBarcode()">Generate Barcode Number</button>
+        <button class="btn green full" onclick="registerProduct()">Save Product & Download Barcode</button>
+      </div>
+      <div class="panel">
+        <h2>Barcode Preview</h2>
+        <div class="preview"><canvas id="newBarcodeCanvas"></canvas></div>
+        <button class="btn full" onclick="downloadNewBarcode()">Download Barcode PNG</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="page" id="barcodes">
+    <div class="panel">
+      <h2>Printable Barcode Labels</h2>
+      <label>Select Product</label>
+      <select id="barcodeSelect" onchange="previewExistingBarcode()">
+        <option value="">Select Product</option>
       </select>
+      <div class="preview"><canvas id="existingBarcodeCanvas"></canvas></div>
+      <button class="btn green" onclick="downloadExistingBarcode()">Download PNG</button>
+      <button class="btn dark" onclick="printExistingBarcode()">Print Label</button>
     </div>
-  </div>
+  </section>
 
-  <button class="btn" onclick="loadInventory()">
-    Refresh Google Sheets
-  </button>
-
-  <div class="tablewrap">
-    <table>
-      <thead>
-        <tr>
-          <th>Barcode</th>
-          <th>Product</th>
-          <th>Category</th>
-          <th>Location</th>
-          <th>Quantity</th>
-          <th>Status</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody id="inventoryTable"></tbody>
-    </table>
-  </div>
-</div>
-
-</section>
-
-<!-- SINGLE SCANNER -->
-
-<section class="page" id="scanner">
-
-<div class="grid2">
-
-  <div class="panel">
-    <h2>Camera Barcode Scanner</h2>
-
-    <p>Scan any registered product barcode.</p>
-
-    <div id="singleReader" class="scanbox"></div>
-
-    <button class="btn full"
-      onclick="startScanner('single')">
-      Open Camera
-    </button>
-
-    <button class="btn gray full"
-      onclick="stopScanner()">
-      Stop Camera
-    </button>
-  </div>
-
-  <div class="panel">
-    <h2>Update Inventory</h2>
-
-    <div class="field">
-      <label>Barcode</label>
-      <input id="scanBarcode"
-        placeholder="Scan or enter barcode"
-        oninput="findScannedProduct()">
+  <section class="page" id="activity">
+    <div class="panel">
+      <h2>Inventory Activity History</h2>
+      <p class="muted">Registrations, additions, removals, and bulk changes.</p>
+      <div class="grid">
+        <div><label>Search</label><input id="historySearch" oninput="renderHistory()" placeholder="Product or barcode"></div>
+        <div><label>Action</label><select id="historyFilter" onchange="renderHistory()"><option value="">All Actions</option><option value="REGISTER">Registered</option><option value="ADD">Added</option><option value="REMOVE">Removed</option></select></div>
+      </div>
+      <button class="btn" onclick="loadInventory()">Refresh History</button>
+      <button class="btn dark" onclick="exportHistory()">Export CSV</button>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>Date</th><th>Product</th><th>Action</th><th>Change</th><th>New Stock</th></tr></thead>
+          <tbody id="historyTable"></tbody>
+        </table>
+      </div>
     </div>
+  </section>
 
-    <p id="scannedInfo">No product selected.</p>
-
-    <div class="field">
-      <label>Action</label>
-      <select id="stockAction">
-        <option value="add">Add Stock (+)</option>
-        <option value="remove">Remove Stock (-)</option>
-      </select>
+  <section class="page" id="analytics">
+    <div class="stats">
+      <div class="stat"><small>Stock Added</small><strong id="addedTotal">0</strong></div>
+      <div class="stat"><small>Stock Removed</small><strong id="removedTotal">0</strong></div>
+      <div class="stat"><small>Categories</small><strong id="categoryCount">0</strong></div>
+      <div class="stat"><small>Recent Activities</small><strong id="activityCount">0</strong></div>
     </div>
-
-    <div class="field">
-      <label>Quantity</label>
-      <input id="stockQuantity"
-        type="number" min="1" step="1" value="1">
+    <div class="grid">
+      <div class="panel"><h2>Inventory by Category</h2><div class="chart"><canvas id="categoryChart"></canvas></div></div>
+      <div class="panel"><h2>Daily Stock Movement</h2><p class="muted">Last 7 days, using recent activity records</p><div class="chart"><canvas id="movementChart"></canvas></div></div>
     </div>
+  </section>
 
-    <button class="btn green full"
-      onclick="updateInventory()">
-      Save Stock Change
-    </button>
-  </div>
-
-</div>
-
-</section>
-
-<!-- BULK SCANNING -->
-
-<section class="page" id="bulk">
-
-<div class="grid2">
-
-  <div class="panel">
-    <h2>Bulk Barcode Scanner</h2>
-
-    <p>
-      Scan multiple products without restarting the camera.
-      Each scan adds an item to your queue.
-    </p>
-
-    <div id="bulkReader" class="scanbox"></div>
-
-    <button class="btn full"
-      onclick="startScanner('bulk')">
-      Start Bulk Scanning
-    </button>
-
-    <button class="btn gray full"
-      onclick="stopScanner()">
-      Stop Camera
-    </button>
-
-    <div class="field">
-      <label>Manual Barcode</label>
-      <input id="bulkBarcode"
-        placeholder="Enter barcode manually">
+  <section class="page" id="settings">
+    <div class="panel">
+      <h2>Google Sheets Connection</h2>
+      <label>Apps Script Web App URL</label>
+      <input id="apiUrl" placeholder="https://script.google.com/.../exec">
+      <button class="btn" onclick="connect()">Connect Spreadsheet</button>
+      <button class="btn dark" onclick="loadInventory()">Test Connection</button>
     </div>
-
-    <div class="field">
-      <label>Action for Next Item</label>
-      <select id="bulkMode">
-        <option value="add">Add Stock</option>
-        <option value="remove">Remove Stock</option>
-      </select>
+    <div class="panel">
+      <h2>Inventory Preferences</h2>
+      <label>Low Stock Warning Level</label>
+      <input id="lowStockLevel" type="number" min="1" step="1" value="5" onchange="savePreferences()">
     </div>
-
-    <div class="field">
-      <label>Quantity per Scan</label>
-      <input id="bulkQuantity"
-        type="number" min="1" step="1" value="1">
-    </div>
-
-    <button class="btn dark full"
-      onclick="addBulkManual()">
-      Add to Queue
-    </button>
-  </div>
-
-  <div class="panel">
-    <h2>Pending Changes</h2>
-
-    <p>
-      <strong id="queueCount">0</strong>
-      pending changes. Maximum 20 per batch.
-    </p>
-
-    <div class="tablewrap">
-      <table>
-        <thead>
-          <tr>
-            <th>Product</th>
-            <th>Action</th>
-            <th>Qty</th>
-            <th>Remove</th>
-          </tr>
-        </thead>
-        <tbody id="bulkTable"></tbody>
-      </table>
-    </div>
-
-    <button class="btn green full"
-      onclick="submitBulk()">
-      Submit All Changes
-    </button>
-
-    <button class="btn red full"
-      onclick="clearBulk()">
-      Clear Queue
-    </button>
-  </div>
-
-</div>
-
-</section>
-
-<!-- ADD PRODUCT -->
-
-<section class="page" id="products">
-
-<div class="grid2">
-
-  <div class="panel">
-    <h2>Register New Product</h2>
-
-    <div class="field">
-      <label>Product Name</label>
-      <input id="newName"
-        placeholder="Example: Blue T-Shirt"
-        oninput="previewNewBarcode()">
-    </div>
-
-    <div class="field">
-      <label>Category</label>
-      <input id="newCategory"
-        list="categorySuggestions"
-        placeholder="Example: Clothing">
-    </div>
-
-    <datalist id="categorySuggestions">
-      <option value="Clothing">
-      <option value="Electronics">
-      <option value="Food">
-      <option value="Supplies">
-      <option value="Tools">
-      <option value="Other">
-    </datalist>
-
-    <div class="field">
-      <label>Storage Location</label>
-      <input id="newLocation"
-        placeholder="Example: Shelf A1">
-    </div>
-
-    <div class="field">
-      <label>Starting Quantity</label>
-      <input id="newQuantity"
-        type="number" min="0" step="1" value="0">
-    </div>
-
-    <div class="field">
-      <label>Barcode Number</label>
-      <input id="newBarcode"
-        placeholder="Generate or enter barcode"
-        oninput="previewNewBarcode()">
-    </div>
-
-    <button class="btn dark full"
-      onclick="generateNewBarcode()">
-      Generate Barcode Number
-    </button>
-
-    <button class="btn green full"
-      onclick="registerProduct()">
-      Save Product & Download Barcode
-    </button>
-  </div>
-
-  <div class="panel">
-    <h2>Barcode Preview</h2>
-
-    <div class="barcode-box">
-      <canvas id="newBarcodeCanvas"></canvas>
-    </div>
-
-    <button class="btn full"
-      onclick="downloadNewBarcode()">
-      Download Barcode PNG
-    </button>
-  </div>
-
-</div>
-
-</section>
-
-<!-- EXISTING BARCODE LABELS -->
-
-<section class="page" id="barcodes">
-
-<div class="panel">
-  <h2>Barcode Label Generator</h2>
-
-  <p>
-    Select a registered product to download or
-    print another copy of its barcode label.
-  </p>
-
-  <div class="field">
-    <label>Product</label>
-    <select id="barcodeSelect"
-      onchange="previewExistingBarcode()">
-      <option value="">Select Product</option>
-    </select>
-  </div>
-
-  <div class="barcode-box">
-    <canvas id="existingBarcodeCanvas"></canvas>
-  </div>
-
-  <div class="actions">
-    <button class="btn green"
-      onclick="downloadExistingBarcode()">
-      Download PNG
-    </button>
-
-    <button class="btn dark"
-      onclick="printExistingBarcode()">
-      Print Label
-    </button>
-  </div>
-</div>
-
-</section>
-
-<!-- ACTIVITY HISTORY -->
-
-<section class="page" id="activity">
-
-<div class="panel">
-  <h2>Inventory Activity History</h2>
-
-  <p>
-    Every registration, addition, removal, and bulk
-    change is recorded in your Activity sheet.
-  </p>
-
-  <div class="grid2">
-    <div class="field">
-      <label>Search History</label>
-      <input id="historySearch"
-        placeholder="Product or barcode"
-        oninput="renderHistory()">
-    </div>
-
-    <div class="field">
-      <label>Filter Action</label>
-      <select id="historyFilter"
-        onchange="renderHistory()">
-        <option value="">All Actions</option>
-        <option value="REGISTER">Registered</option>
-        <option value="ADD">Stock Added</option>
-        <option value="REMOVE">Stock Removed</option>
-      </select>
-    </div>
-  </div>
-
-  <div class="actions">
-    <button class="btn" onclick="loadInventory()">
-      Refresh History
-    </button>
-
-    <button class="btn dark" onclick="exportHistory()">
-      Export CSV
-    </button>
-  </div>
-
-  <div class="tablewrap">
-    <table>
-      <thead>
-        <tr>
-          <th>Date</th>
-          <th>Product</th>
-          <th>Action</th>
-          <th>Change</th>
-          <th>New Quantity</th>
-        </tr>
-      </thead>
-      <tbody id="historyTable"></tbody>
-    </table>
-  </div>
-</div>
-
-</section>
-
-<!-- ANALYTICS -->
-
-<section class="page" id="analytics">
-
-<div class="stats">
-  <div class="stat">
-    <small>Stock Added</small>
-    <h2 id="addedTotal">0</h2>
-  </div>
-
-  <div class="stat">
-    <small>Stock Removed</small>
-    <h2 id="removedTotal">0</h2>
-  </div>
-
-  <div class="stat">
-    <small>Categories</small>
-    <h2 id="categoryCount">0</h2>
-  </div>
-
-  <div class="stat">
-    <small>Recorded Activities</small>
-    <h2 id="activityCount">0</h2>
-  </div>
-</div>
-
-<div class="grid2">
-
-  <div class="panel">
-    <h2>Inventory by Category</h2>
-    <div class="chartbox">
-      <canvas id="categoryChart"></canvas>
-    </div>
-  </div>
-
-  <div class="panel">
-    <h2>Daily Stock Movement</h2>
-    <p class="muted">Last seven days</p>
-
-    <div class="chartbox">
-      <canvas id="movementChart"></canvas>
-    </div>
-  </div>
-
-</div>
-
-<div class="panel">
-  <h2>Analytics Information</h2>
-  <p>
-    Charts are calculated from your current Inventory
-    sheet and the most recent 500 Activity records.
-    Stock movement excludes initial product
-    registration quantities.
-  </p>
-</div>
-
-</section>
-
-<!-- SETTINGS -->
-
-<section class="page" id="settings">
-
-<div class="panel">
-  <h2>Google Sheets Connection</h2>
-
-  <div class="field">
-    <label>Apps Script Web App URL</label>
-    <input id="apiUrl"
-      placeholder="https://script.google.com/.../exec">
-  </div>
-
-  <button class="btn" onclick="connect()">
-    Connect Spreadsheet
-  </button>
-
-  <button class="btn dark"
-    onclick="loadInventory()">
-    Test Connection
-  </button>
-</div>
-
-<div class="panel">
-  <h2>Inventory Preferences</h2>
-
-  <div class="field">
-    <label>Low Stock Warning Level</label>
-    <input id="lowStockLevel"
-      type="number" min="1" step="1" value="5"
-      onchange="savePreferences()">
-  </div>
-</div>
-
-</section>
-
+  </section>
 </main>
 
-<!-- BARCODE DOWNLOAD WINDOW -->
-
-<div class="modal" id="downloadModal">
+<div id="downloadModal" class="modal">
   <div class="modal-body">
     <h2>Product Created!</h2>
-    <p>
-      Your product was saved to Google Sheets.
-      Download the barcode label to print it.
-    </p>
-
+    <p>Your product is saved in Google Sheets.</p>
     <canvas id="modalBarcodeCanvas"></canvas>
-
-    <button class="btn green full"
-      onclick="downloadModalBarcode()">
-      Download Barcode PNG
-    </button>
-
-    <button class="btn dark full"
-      onclick="printModalBarcode()">
-      Print Barcode
-    </button>
-
-    <button class="btn gray full"
-      onclick="closeModal()">
-      Done
-    </button>
+    <button class="btn green full" onclick="downloadModalBarcode()">Download Barcode PNG</button>
+    <button class="btn dark full" onclick="printModalBarcode()">Print Barcode</button>
+    <button class="btn full" onclick="closeModal()">Done</button>
   </div>
 </div>
 
 <script>
-// ========================================
-// STOCKROOM PRO 2.0
-// ========================================
-
-let API = localStorage.getItem("stockroom_api") || "";
-let products = [];
-let history = [];
-let bulkQueue = [];
-
-let scanner = null;
-let scannerStarting = false;
-let scannerMode = "";
-let lastScan = "";
-let lastScanTime = 0;
-
-let busy = false;
-let categoryChart = null;
-let movementChart = null;
-
-let latestBarcode = "";
-let latestName = "";
-
-let lowLevel =
-  Number(localStorage.getItem("stockroom_low")) || 5;
-
 const $ = id => document.getElementById(id);
-
+let API = localStorage.getItem("stockroom_api") || "";
+let products = [], history = [], bulkQueue = [];
+let scanner = null, starting = false, busy = false;
+let lastScan = "", lastScanTime = 0;
+let latestBarcode = "", latestName = "";
+let categoryChart = null, movementChart = null;
+let lowLevel = Number(localStorage.getItem("stockroom_low")) || 5;
 $("apiUrl").value = API;
 $("lowStockLevel").value = lowLevel;
 
-// ========================================
-// NAVIGATION
-// ========================================
-
-function navigate(page, button) {
-  document.querySelectorAll(".page").forEach(p => {
-    p.classList.remove("active");
-  });
-
-  $(page).classList.add("active");
-
-  document.querySelectorAll(".nav").forEach(n => {
-    n.classList.remove("active");
-  });
-
-  const nav = button || [...document.querySelectorAll(".nav")]
-    .find(n => n.getAttribute("onclick")
-      .includes("'" + page + "'"));
-
-  if (nav) nav.classList.add("active");
-
-  const titles = {
-    dashboard: "Dashboard",
-    inventory: "Inventory Management",
-    scanner: "Barcode Scanner",
-    bulk: "Bulk Inventory Scanning",
-    products: "Register Product",
-    barcodes: "Barcode Labels",
-    activity: "Activity History",
-    analytics: "Inventory Analytics",
-    settings: "Settings"
-  };
-
-  $("pageTitle").textContent = titles[page];
-
-  if (
-    page !== "scanner" &&
-    page !== "bulk"
-  ) {
-    stopScanner();
-  }
-
-  if (page === "analytics") {
-    renderCharts();
-  }
-}
-
-// ========================================
-// NOTIFICATIONS
-// ========================================
-
 function notify(text, error = false) {
-  const box = $("message");
-
-  box.style.display = "block";
-  box.className = error ? "message error" : "message";
-  box.textContent = text;
+  $("message").style.display = "block";
+  $("message").className = error ? "error" : "";
+  $("message").textContent = text;
 }
-
-function setConnection(connected) {
-  $("connection").textContent = connected
-    ? "Google Sheets Connected"
-    : "Not Connected";
-
-  $("connection").classList.toggle(
-    "online", connected
+function navigate(page, button) {
+  document.querySelectorAll(".page").forEach(e => e.classList.remove("active"));
+  $(page).classList.add("active");
+  document.querySelectorAll(".nav").forEach(e => e.classList.remove("active"));
+  const nav = button || [...document.querySelectorAll(".nav")].find(
+    e => e.getAttribute("onclick").includes("'" + page + "'")
   );
+  if (nav) nav.classList.add("active");
+  $("pageTitle").textContent = {
+    dashboard:"Dashboard",inventory:"Inventory Management",
+    scanner:"Barcode Scanner",bulk:"Bulk Scanning",
+    products:"Add Product",barcodes:"Barcode Labels",
+    activity:"Activity History",analytics:"Analytics",
+    settings:"Settings"
+  }[page];
+  if (page !== "scanner" && page !== "bulk") stopScanner();
+  if (page === "analytics") renderCharts();
 }
-
-// ========================================
-// GOOGLE SHEETS CONNECTION
-// ========================================
-
+function setConnection(online) {
+  $("connection").textContent = online ? "Google Sheets Connected" : "Not Connected";
+  $("connection").classList.toggle("online", online);
+}
 function connect() {
   const url = $("apiUrl").value.trim();
-
-  if (
-    !url.startsWith("https://script.google.com/") ||
-    !url.endsWith("/exec")
-  ) {
+  if (!url.startsWith("https://script.google.com/") || !url.endsWith("/exec")) {
     notify("Enter a valid Apps Script URL.", true);
     return;
   }
-
   API = url;
   localStorage.setItem("stockroom_api", API);
-
   loadInventory();
 }
-
 function request(params) {
   return new Promise((resolve, reject) => {
-    if (!API) {
-      reject(new Error("Connect Google Sheets first."));
-      return;
-    }
-
-    const callback =
-      "sr_" + Date.now() + "_" +
-      Math.random().toString(36).slice(2);
-
+    if (!API) return reject(new Error("Connect Google Sheets first."));
+    const id = "sr_" + Date.now() + "_" + Math.random().toString(36).slice(2);
     const script = document.createElement("script");
     let finished = false;
-
-    const timer = setTimeout(() => {
-      finish(new Error("Connection timed out."));
-    }, 20000);
-
-    function finish(error, result) {
+    const timer = setTimeout(() => finish(new Error("Connection timed out.")), 20000);
+    function finish(error, data) {
       if (finished) return;
-
       finished = true;
       clearTimeout(timer);
-      delete window[callback];
+      delete window[id];
       script.remove();
-
-      if (error) reject(error);
-      else resolve(result);
+      error ? reject(error) : resolve(data);
     }
-
-    window[callback] = data => {
-      if (data && data.success) {
-        finish(null, data);
-      } else {
-        finish(new Error(
-          data?.error || "Google Sheets request failed."
-        ));
-      }
-    };
-
-    const query = new URLSearchParams({
-      ...params,
-      callback
-    });
-
-    query.set("_t", Date.now());
-
+    window[id] = data => data && data.success
+      ? finish(null, data)
+      : finish(new Error(data?.error || "Request failed."));
+    script.onerror = () => finish(new Error("Cannot reach Google Sheets."));
+    const query = new URLSearchParams({...params,callback:id,_t:Date.now()});
     script.src = API + "?" + query.toString();
-
-    script.onerror = () => {
-      finish(new Error("Cannot reach Google Sheets."));
-    };
-
     document.head.appendChild(script);
   });
 }
-
 function applyData(data) {
   products = data.products || [];
   history = data.history || [];
-
   renderAll();
   setConnection(true);
 }
-
 async function loadInventory() {
   try {
-    notify("Loading Google Sheets...");
-
-    const result = await request({
-      action: "list"
-    });
-
-    applyData(result);
+    notify("Loading inventory...");
+    applyData(await request({action:"list"}));
     notify("Inventory synced successfully.");
-  } catch (error) {
+  } catch(e) {
     setConnection(false);
-    notify(error.message, true);
+    notify(e.message, true);
   }
 }
-
-// ========================================
-// HELPERS
-// ========================================
-
-function productByBarcode(barcode) {
-  return products.find(
-    p => p.barcode === barcode
-  );
-}
-
-function validQuantity(value, allowZero = false) {
-  const n = Number(value);
-
-  return Number.isSafeInteger(n) &&
-    n >= (allowZero ? 0 : 1);
-}
-
-function getStatus(quantity) {
-  if (quantity <= 0) {
-    return { label: "Out of Stock", type: "out" };
-  }
-
-  if (quantity <= lowLevel) {
-    return { label: "Low Stock", type: "low" };
-  }
-
-  return { label: "In Stock", type: "good" };
-}
-
-function cell(row, value) {
+const findProduct = code => products.find(p => p.barcode === code);
+const validQty = (v,zero=false) => v !== "" &&
+  Number.isSafeInteger(Number(v)) && Number(v) >= (zero ? 0 : 1);
+function cell(row,value) {
   const td = document.createElement("td");
   td.textContent = value;
   row.appendChild(td);
   return td;
 }
-
-function statusCell(row, quantity) {
-  const td = document.createElement("td");
+function statusCell(row,q) {
+  const s = q === 0 ? ["Out of Stock","out"] :
+    q <= lowLevel ? ["Low Stock","low"] : ["In Stock","good"];
+  const td = cell(row,"");
   const span = document.createElement("span");
-  const status = getStatus(quantity);
-
-  span.className = "status " + status.type;
-  span.textContent = status.label;
-
+  span.className = "status " + s[1];
+  span.textContent = s[0];
   td.appendChild(span);
-  row.appendChild(td);
 }
-
-// ========================================
-// DASHBOARD
-// ========================================
-
 function renderDashboard() {
-  const total = products.reduce(
-    (sum, p) => sum + p.quantity, 0
-  );
-
-  const low = products.filter(
-    p => p.quantity > 0 && p.quantity <= lowLevel
-  );
-
-  const out = products.filter(
-    p => p.quantity === 0
-  );
-
   $("totalProducts").textContent = products.length;
-  $("totalStock").textContent = total;
-  $("lowStock").textContent = low.length;
-  $("outStock").textContent = out.length;
-
+  $("totalStock").textContent = products.reduce((n,p)=>n+p.quantity,0);
+  $("lowStock").textContent = products.filter(p=>p.quantity>0 && p.quantity<=lowLevel).length;
+  $("outStock").textContent = products.filter(p=>p.quantity===0).length;
   const alerts = $("alerts");
   alerts.replaceChildren();
-
-  const warnings = [...out, ...low];
-
-  if (!warnings.length) {
-    const p = document.createElement("p");
-    p.textContent = "No low-stock alerts.";
-    alerts.appendChild(p);
-  }
-
-  warnings.forEach(product => {
+  const warnings = products.filter(p=>p.quantity<=lowLevel);
+  if (!warnings.length) alerts.textContent = "No low-stock alerts.";
+  warnings.forEach(p => {
     const div = document.createElement("div");
     div.className = "alert";
-    div.textContent =
-      product.name + " — " +
-      product.quantity + " remaining";
+    div.textContent = p.name + " — " + p.quantity + " remaining";
     alerts.appendChild(div);
   });
-
-  const table = $("dashboardTable");
-  table.replaceChildren();
-
-  products.slice(0, 12).forEach(p => {
+  $("dashboardTable").replaceChildren();
+  products.slice(0,12).forEach(p => {
     const row = document.createElement("tr");
-
-    cell(row, p.name);
-    cell(row, p.category);
-    cell(row, p.location);
-    cell(row, p.quantity);
-    statusCell(row, p.quantity);
-
-    table.appendChild(row);
+    [p.name,p.category,p.location,p.quantity].forEach(v=>cell(row,v));
+    statusCell(row,p.quantity);
+    $("dashboardTable").appendChild(row);
   });
 }
-
-// ========================================
-// INVENTORY
-// ========================================
-
-function populateFilters() {
-  const select = $("categoryFilter");
-  const previous = select.value;
-
-  select.replaceChildren();
-
-  const all = new Option("All Categories", "");
-  select.appendChild(all);
-
-  const categories = [
-    ...new Set(products.map(p => p.category))
-  ].sort();
-
-  categories.forEach(category => {
-    select.appendChild(
-      new Option(category, category)
-    );
-  });
-
-  if (categories.includes(previous)) {
-    select.value = previous;
-  }
-}
-
 function renderInventory() {
-  const search = $("inventorySearch")
-    .value.toLowerCase();
-
+  const search = $("inventorySearch").value.toLowerCase();
   const category = $("categoryFilter").value;
-  const table = $("inventoryTable");
-
-  table.replaceChildren();
-
-  products
-    .filter(p => {
-      const matchesSearch =
-        p.name.toLowerCase().includes(search) ||
-        p.barcode.toLowerCase().includes(search) ||
-        p.location.toLowerCase().includes(search);
-
-      const matchesCategory =
-        !category || p.category === category;
-
-      return matchesSearch && matchesCategory;
-    })
-    .forEach(p => {
-      const row = document.createElement("tr");
-
-      cell(row, p.barcode);
-      cell(row, p.name);
-      cell(row, p.category);
-      cell(row, p.location);
-      cell(row, p.quantity);
-      statusCell(row, p.quantity);
-
-      const td = document.createElement("td");
-      const button = document.createElement("button");
-
-      button.className = "btn small";
-      button.textContent = "Manage";
-
-      button.onclick = () => {
-        navigate("scanner");
-        $("scanBarcode").value = p.barcode;
-        findScannedProduct();
-      };
-
-      td.appendChild(button);
-      row.appendChild(td);
-      table.appendChild(row);
-    });
-}
-
-// ========================================
-// SCANNER
-// ========================================
-
-async function startScanner(mode) {
-  if (scanner || scannerStarting) {
-    notify("A scanner is already active.", true);
-    return;
-  }
-
-  if (typeof Html5Qrcode === "undefined") {
-    notify("Scanner library failed to load.", true);
-    return;
-  }
-
-  scannerStarting = true;
-  scannerMode = mode;
-
-  const elementId = mode === "bulk"
-    ? "bulkReader"
-    : "singleReader";
-
-  try {
-    scanner = new Html5Qrcode(elementId);
-
-    await scanner.start(
-      { facingMode: "environment" },
-      {
-        fps: 10,
-        qrbox: { width: 250, height: 150 }
-      },
-      decoded => {
-        const barcode = decoded.trim();
-
-        if (mode === "single") {
-          $("scanBarcode").value = barcode;
-          findScannedProduct();
-
-          notify("Barcode scanned: " + barcode);
-          stopScanner();
-        } else {
-          const now = Date.now();
-
-          // Avoid rapid duplicate detections.
-          if (
-            barcode === lastScan &&
-            now - lastScanTime < 1800
-          ) return;
-
-          lastScan = barcode;
-          lastScanTime = now;
-
-          addToBulkQueue(barcode);
-        }
-      },
-      () => {}
-    );
-
-    notify("Camera is ready.");
-  } catch (error) {
-    notify("Camera error: " + error.message, true);
-    scanner = null;
-  } finally {
-    scannerStarting = false;
-  }
-}
-
-async function stopScanner() {
-  if (!scanner) return;
-
-  const current = scanner;
-  scanner = null;
-
-  try {
-    if (current.isScanning) {
-      await current.stop();
-    }
-
-    current.clear();
-  } catch (error) {
-    console.log(error);
-  }
-}
-
-function findScannedProduct() {
-  const barcode = $("scanBarcode").value.trim();
-  const product = productByBarcode(barcode);
-
-  $("scannedInfo").textContent = product
-    ? product.name + " | " +
-      product.quantity + " in stock | " +
-      product.location
-    : barcode
-      ? "Product not found."
-      : "No product selected.";
-}
-
-// ========================================
-// SINGLE INVENTORY UPDATE
-// ========================================
-
-async function updateInventory() {
-  if (busy) return;
-
-  const barcode = $("scanBarcode").value.trim();
-  const quantity = Number($("stockQuantity").value);
-  const mode = $("stockAction").value;
-
-  if (!productByBarcode(barcode)) {
-    notify("Product not found.", true);
-    return;
-  }
-
-  if (!validQuantity(quantity)) {
-    notify("Invalid quantity.", true);
-    return;
-  }
-
-  busy = true;
-
-  try {
-    const result = await request({
-      action: "update",
-      barcode,
-      quantity,
-      mode
-    });
-
-    applyData(result);
-
-    notify("Inventory updated and activity recorded.");
-  } catch (error) {
-    notify(error.message, true);
-  } finally {
-    busy = false;
-  }
-}
-
-// ========================================
-// BULK SCANNING
-// ========================================
-
-function addToBulkQueue(barcode) {
-  if (busy) return;
-
-  const product = productByBarcode(barcode);
-
-  if (!product) {
-    notify("Unregistered barcode: " + barcode, true);
-    return;
-  }
-
-  if (bulkQueue.length >= 20) {
-    notify("Queue is full. Submit these 20 items.", true);
-    return;
-  }
-
-  const quantity = Number($("bulkQuantity").value);
-  const mode = $("bulkMode").value;
-
-  if (!validQuantity(quantity)) {
-    notify("Enter a valid quantity.", true);
-    return;
-  }
-
-  bulkQueue.push({
-    barcode,
-    name: product.name,
-    mode,
-    quantity
-  });
-
-  renderBulkQueue();
-
-  notify(product.name + " added to the queue.");
-}
-
-function addBulkManual() {
-  const barcode = $("bulkBarcode").value.trim();
-
-  addToBulkQueue(barcode);
-  $("bulkBarcode").value = "";
-}
-
-function renderBulkQueue() {
-  const table = $("bulkTable");
-  table.replaceChildren();
-
-  $("queueCount").textContent = bulkQueue.length;
-
-  bulkQueue.forEach((item, index) => {
+  $("inventoryTable").replaceChildren();
+  products.filter(p =>
+    (!category || p.category===category) &&
+    [p.name,p.barcode,p.location].some(v=>v.toLowerCase().includes(search))
+  ).forEach(p => {
     const row = document.createElement("tr");
-
-    cell(row, item.name);
-    cell(row, item.mode === "add" ? "Add" : "Remove");
-    cell(row, item.quantity);
-
-    const td = document.createElement("td");
-    const button = document.createElement("button");
-
-    button.className = "btn red small";
-    button.textContent = "X";
-
-    button.onclick = () => {
-      bulkQueue.splice(index, 1);
-      renderBulkQueue();
+    [p.barcode,p.name,p.category,p.location,p.quantity].forEach(v=>cell(row,v));
+    statusCell(row,p.quantity);
+    const td = cell(row,"");
+    const b = document.createElement("button");
+    b.className = "btn";
+    b.textContent = "Manage";
+    b.onclick = () => {
+      navigate("scanner");
+      $("scanBarcode").value = p.barcode;
+      findScannedProduct();
     };
-
-    td.appendChild(button);
-    row.appendChild(td);
-
-    table.appendChild(row);
+    td.appendChild(b);
+    $("inventoryTable").appendChild(row);
   });
 }
-
-function clearBulk() {
-  if (busy) return;
-
-  bulkQueue = [];
-  renderBulkQueue();
-  notify("Bulk queue cleared.");
-}
-
-async function submitBulk() {
-  if (busy) return;
-
-  if (!bulkQueue.length) {
-    notify("Scan products first.", true);
-    return;
-  }
-
-  busy = true;
-
-  try {
-    const result = await request({
-      action: "bulk",
-      items: JSON.stringify(
-        bulkQueue.map(item => ({
-          barcode: item.barcode,
-          mode: item.mode,
-          quantity: item.quantity
-        }))
-      )
-    });
-
-    applyData(result);
-
-    bulkQueue = [];
-    renderBulkQueue();
-
-    notify(
-      "Bulk update completed! Google Sheets synced."
-    );
-  } catch (error) {
-    notify(error.message, true);
-  } finally {
-    busy = false;
-  }
-}
-
-// ========================================
-// BARCODE GENERATOR
-// ========================================
-
-function generateNewBarcode() {
-  let barcode;
-
-  do {
-    barcode = "SR" +
-      Date.now().toString() +
-      Math.floor(Math.random() * 1000000)
-        .toString().padStart(6, "0");
-  } while (productByBarcode(barcode));
-
-  $("newBarcode").value = barcode;
-  previewNewBarcode();
-}
-
-function drawBarcode(canvasId, barcode) {
-  const canvas = $(canvasId);
-
-  if (!barcode) {
-    const ctx = canvas.getContext("2d");
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    return false;
-  }
-
-  if (typeof JsBarcode === "undefined") {
-    notify("Barcode library did not load.", true);
-    return false;
-  }
-
-  try {
-    JsBarcode(canvas, barcode, {
-      format: "CODE128",
-      displayValue: true,
-      height: 85,
-      width: 2,
-      margin: 15,
-      fontSize: 16
-    });
-
-    return true;
-  } catch (error) {
-    notify("Invalid barcode: " + error.message, true);
-    return false;
-  }
-}
-
-function previewNewBarcode() {
-  drawBarcode(
-    "newBarcodeCanvas",
-    $("newBarcode").value.trim()
+function populateSelects() {
+  const cat = $("categoryFilter"), old = cat.value;
+  cat.replaceChildren();
+  cat.appendChild(new Option("All Categories",""));
+  [...new Set(products.map(p=>p.category))].sort().forEach(c =>
+    cat.appendChild(new Option(c,c))
   );
-}
+  if ([...cat.options].some(o=>o.value===old)) cat.value=old;
 
-// ========================================
-// REGISTER PRODUCT
-// ========================================
-
-async function registerProduct() {
-  if (busy) return;
-
-  const name = $("newName").value.trim();
-  const category =
-    $("newCategory").value.trim() || "Other";
-  const location =
-    $("newLocation").value.trim() || "Not Assigned";
-  const quantity = Number($("newQuantity").value);
-
-  let barcode = $("newBarcode").value.trim();
-
-  if (!name) {
-    notify("Enter a product name.", true);
-    return;
-  }
-
-  if (!validQuantity(quantity, true)) {
-    notify("Invalid starting quantity.", true);
-    return;
-  }
-
-  if (!barcode) {
-    generateNewBarcode();
-    barcode = $("newBarcode").value.trim();
-  }
-
-  if (productByBarcode(barcode)) {
-    notify("Barcode already registered.", true);
-    return;
-  }
-
-  if (!drawBarcode("newBarcodeCanvas", barcode)) {
-    return;
-  }
-
-  busy = true;
-
-  try {
-    const result = await request({
-      action: "register",
-      barcode,
-      name,
-      category,
-      location,
-      quantity
-    });
-
-    applyData(result);
-
-    latestBarcode = barcode;
-    latestName = name;
-
-    drawBarcode("modalBarcodeCanvas", barcode);
-
-    $("downloadModal").classList.add("show");
-
-    $("newName").value = "";
-    $("newCategory").value = "";
-    $("newLocation").value = "";
-    $("newQuantity").value = "0";
-    $("newBarcode").value = "";
-
-    notify(
-      "Product created! Download your barcode label."
-    );
-  } catch (error) {
-    notify(error.message, true);
-  } finally {
-    busy = false;
-  }
-}
-
-// ========================================
-// DOWNLOAD AND PRINT BARCODE
-// ========================================
-
-function makeLabelCanvas(barcode, name) {
-  const canvas = document.createElement("canvas");
-  canvas.width = 800;
-  canvas.height = 360;
-
-  const ctx = canvas.getContext("2d");
-
-  ctx.fillStyle = "white";
-  ctx.fillRect(0, 0, 800, 360);
-
-  ctx.fillStyle = "#111827";
-  ctx.textAlign = "center";
-  ctx.font = "bold 26px Arial";
-
-  ctx.fillText(name || "Inventory Product", 400, 45, 760);
-
-  const temp = document.createElement("canvas");
-
-  JsBarcode(temp, barcode, {
-    format: "CODE128",
-    displayValue: true,
-    width: 2,
-    height: 110,
-    fontSize: 18,
-    margin: 15
-  });
-
-  const scale = Math.min(1, 740 / temp.width);
-
-  const width = temp.width * scale;
-  const height = temp.height * scale;
-
-  ctx.drawImage(
-    temp,
-    (800 - width) / 2,
-    80,
-    width,
-    height
-  );
-
-  ctx.font = "16px Arial";
-  ctx.fillStyle = "#64748b";
-  ctx.fillText("STOCKROOM PRO INVENTORY", 400, 320);
-
-  return canvas;
-}
-
-function downloadBarcode(barcode, name) {
-  if (!barcode) {
-    notify("Select a barcode first.", true);
-    return;
-  }
-
-  try {
-    const canvas = makeLabelCanvas(barcode, name);
-    const link = document.createElement("a");
-
-    link.download =
-      "StockRoom-" +
-      barcode.replace(/[^a-zA-Z0-9_-]/g, "_") +
-      ".png";
-
-    link.href = canvas.toDataURL("image/png");
-
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-
-    notify("Barcode download started.");
-  } catch (error) {
-    notify(error.message, true);
-  }
-}
-
-function downloadNewBarcode() {
-  downloadBarcode(
-    $("newBarcode").value.trim(),
-    $("newName").value.trim()
-  );
-}
-
-function downloadModalBarcode() {
-  downloadBarcode(latestBarcode, latestName);
-}
-
-function populateBarcodeSelect() {
-  const select = $("barcodeSelect");
-  const selected = select.value;
-
+  const select = $("barcodeSelect"), chosen = select.value;
   select.replaceChildren();
-  select.appendChild(new Option("Select Product", ""));
-
-  products.forEach(product => {
-    select.appendChild(
-      new Option(product.name, product.barcode)
-    );
-  });
-
-  if (productByBarcode(selected)) {
-    select.value = selected;
-  }
-
+  select.appendChild(new Option("Select Product",""));
+  products.forEach(p=>select.appendChild(new Option(p.name,p.barcode)));
+  if (findProduct(chosen)) select.value=chosen;
   previewExistingBarcode();
 }
-
+function findScannedProduct() {
+  const code = $("scanBarcode").value.trim();
+  const p = findProduct(code);
+  $("scannedInfo").textContent = p
+    ? p.name + " | " + p.quantity + " in stock | " + p.location
+    : code ? "Product not found." : "No product selected.";
+}
+async function startScanner(mode) {
+  if (scanner || starting) return;
+  if (!window.Html5Qrcode) return notify("Scanner library unavailable.",true);
+  starting = true;
+  try {
+    const reader = mode==="bulk" ? "bulkReader" : "singleReader";
+    scanner = new Html5Qrcode(reader);
+    await scanner.start(
+      {facingMode:"environment"},
+      {fps:10,qrbox:{width:250,height:150}},
+      decoded => {
+        const code = decoded.trim();
+        if (mode==="single") {
+          $("scanBarcode").value=code;
+          findScannedProduct();
+          notify("Scanned: " + code);
+          stopScanner();
+        } else {
+          const now=Date.now();
+          if (code===lastScan && now-lastScanTime<2500) return;
+          lastScan=code;
+          lastScanTime=now;
+          addToBulkQueue(code);
+        }
+      },
+      ()=>{}
+    );
+    notify("Camera ready.");
+  } catch(e) {
+    scanner=null;
+    notify("Camera error: " + e.message,true);
+  } finally { starting=false; }
+}
+async function stopScanner() {
+  if (!scanner) return;
+  const current=scanner;
+  scanner=null;
+  try {
+    if (current.isScanning) await current.stop();
+    current.clear();
+  } catch(e) {console.warn(e);}
+}
+async function updateInventory() {
+  if (busy) return;
+  const barcode=$("scanBarcode").value.trim();
+  const quantity=$("stockQuantity").value;
+  const mode=$("stockAction").value;
+  if (!findProduct(barcode)) return notify("Product not found.",true);
+  if (!validQty(quantity)) return notify("Invalid quantity.",true);
+  busy=true;
+  try {
+    applyData(await request({action:"update",barcode,quantity,mode}));
+    notify("Stock updated and activity recorded.");
+  } catch(e) {notify(e.message,true);}
+  finally {busy=false;}
+}
+function addToBulkQueue(barcode) {
+  if (busy) return;
+  const p=findProduct(barcode);
+  if (!p) return notify("Unregistered barcode: "+barcode,true);
+  if (bulkQueue.length>=20) return notify("Maximum 20 changes per batch.",true);
+  const q=$("bulkQuantity").value;
+  if (!validQty(q)) return notify("Invalid quantity.",true);
+  bulkQueue.push({barcode,name:p.name,mode:$("bulkMode").value,quantity:Number(q)});
+  renderBulkQueue();
+  notify(p.name+" added to queue.");
+}
+function addBulkManual() {
+  addToBulkQueue($("bulkBarcode").value.trim());
+  $("bulkBarcode").value="";
+}
+function renderBulkQueue() {
+  $("queueCount").textContent=bulkQueue.length;
+  $("bulkTable").replaceChildren();
+  bulkQueue.forEach((p,i)=>{
+    const row=document.createElement("tr");
+    [p.name,p.mode,p.quantity].forEach(v=>cell(row,v));
+    const td=cell(row,"");
+    const b=document.createElement("button");
+    b.className="btn red";
+    b.textContent="Remove";
+    b.onclick=()=>{bulkQueue.splice(i,1);renderBulkQueue();};
+    td.appendChild(b);
+    $("bulkTable").appendChild(row);
+  });
+}
+function clearBulk() {
+  if (busy) return;
+  bulkQueue=[];
+  renderBulkQueue();
+}
+async function submitBulk() {
+  if (busy || !bulkQueue.length) return notify("Queue is empty.",true);
+  busy=true;
+  try {
+    const items=JSON.stringify(bulkQueue.map(
+      ({barcode,quantity,mode})=>({barcode,quantity,mode})
+    ));
+    applyData(await request({action:"bulk",items}));
+    bulkQueue=[];
+    renderBulkQueue();
+    notify("All queued changes saved!");
+  } catch(e) {notify(e.message,true);}
+  finally {busy=false;}
+}
+function generateNewBarcode() {
+  let code;
+  do {
+    code="SR"+Date.now()+Math.floor(Math.random()*1000000).toString().padStart(6,"0");
+  } while(findProduct(code));
+  $("newBarcode").value=code;
+  previewNewBarcode();
+}
+function drawBarcode(canvasId,code) {
+  const canvas=$(canvasId);
+  if (!code) {
+    canvas.getContext("2d").clearRect(0,0,canvas.width,canvas.height);
+    return false;
+  }
+  if (!window.JsBarcode) {
+    notify("Barcode library unavailable.",true);
+    return false;
+  }
+  try {
+    JsBarcode(canvas,code,{
+      format:"CODE128",displayValue:true,width:2,
+      height:85,fontSize:16,margin:15
+    });
+    return true;
+  } catch(e) {
+    notify("Invalid barcode: "+e.message,true);
+    return false;
+  }
+}
+function previewNewBarcode() {
+  drawBarcode("newBarcodeCanvas",$("newBarcode").value.trim());
+}
+async function registerProduct() {
+  if (busy) return;
+  const name=$("newName").value.trim();
+  const category=$("newCategory").value.trim()||"Other";
+  const location=$("newLocation").value.trim()||"Not Assigned";
+  const quantity=$("newQuantity").value;
+  if (!name) return notify("Enter product name.",true);
+  if (!validQty(quantity,true)) return notify("Invalid quantity.",true);
+  if (!$("newBarcode").value.trim()) generateNewBarcode();
+  const barcode=$("newBarcode").value.trim();
+  if (findProduct(barcode)) return notify("Barcode already exists.",true);
+  if (!drawBarcode("newBarcodeCanvas",barcode)) return;
+  busy=true;
+  try {
+    const result=await request({
+      action:"register",barcode,name,category,location,quantity
+    });
+    applyData(result);
+    latestBarcode=barcode;
+    latestName=name;
+    drawBarcode("modalBarcodeCanvas",barcode);
+    $("downloadModal").classList.add("show");
+    $("newName").value="";
+    $("newCategory").value="";
+    $("newLocation").value="";
+    $("newQuantity").value="0";
+    $("newBarcode").value="";
+    notify("Product saved! Download your barcode.");
+  } catch(e) {notify(e.message,true);}
+  finally {busy=false;}
+}
+function makeLabelCanvas(code,name) {
+  const canvas=document.createElement("canvas");
+  canvas.width=800;canvas.height=360;
+  const ctx=canvas.getContext("2d");
+  ctx.fillStyle="white";ctx.fillRect(0,0,800,360);
+  ctx.fillStyle="#111827";ctx.textAlign="center";
+  ctx.font="bold 26px Arial";
+  ctx.fillText(name||"Inventory Product",400,45,760);
+  const temp=document.createElement("canvas");
+  JsBarcode(temp,code,{format:"CODE128",displayValue:true,width:2,height:110,fontSize:18,margin:15});
+  const scale=Math.min(1,740/temp.width);
+  ctx.drawImage(temp,(800-temp.width*scale)/2,80,temp.width*scale,temp.height*scale);
+  ctx.font="16px Arial";
+  ctx.fillText("STOCKROOM PRO INVENTORY",400,320);
+  return canvas;
+}
+function downloadBarcode(code,name) {
+  if (!code) return notify("Select a barcode first.",true);
+  try {
+    const canvas=makeLabelCanvas(code,name);
+    const a=document.createElement("a");
+    a.href=canvas.toDataURL("image/png");
+    a.download="StockRoom-"+code.replace(/[^a-z0-9_-]/gi,"_")+".png";
+    document.body.appendChild(a);
+    a.click();a.remove();
+    notify("Barcode download started.");
+  } catch(e) {notify(e.message,true);}
+}
+function printBarcode(code,name) {
+  if (!code) return notify("Select a barcode first.",true);
+  const image=makeLabelCanvas(code,name).toDataURL("image/png");
+  const tab=window.open("","_blank");
+  if (!tab) return notify("Enable pop-ups for printing.",true);
+  tab.document.write('<html><body style="text-align:center"><img style="max-width:100%" src="'+image+'" onload="window.print()"></body></html>');
+  tab.document.close();
+}
+function downloadNewBarcode() {
+  downloadBarcode($("newBarcode").value.trim(),$("newName").value.trim());
+}
+function downloadModalBarcode() {downloadBarcode(latestBarcode,latestName);}
+function printModalBarcode() {printBarcode(latestBarcode,latestName);}
+function closeModal() {$("downloadModal").classList.remove("show");}
 function previewExistingBarcode() {
-  drawBarcode(
-    "existingBarcodeCanvas",
-    $("barcodeSelect").value
-  );
+  drawBarcode("existingBarcodeCanvas",$("barcodeSelect").value);
 }
-
 function downloadExistingBarcode() {
-  const product = productByBarcode(
-    $("barcodeSelect").value
-  );
-
-  if (!product) {
-    notify("Select a product first.", true);
-    return;
-  }
-
-  downloadBarcode(product.barcode, product.name);
+  const p=findProduct($("barcodeSelect").value);
+  if (!p) return notify("Select a product.",true);
+  downloadBarcode(p.barcode,p.name);
 }
-
-function printBarcode(barcode, name) {
-  if (!barcode) {
-    notify("Select a barcode first.", true);
-    return;
-  }
-
-  const canvas = makeLabelCanvas(barcode, name);
-  const image = canvas.toDataURL("image/png");
-  const popup = window.open("", "_blank");
-
-  if (!popup) {
-    notify("Allow pop-ups to print labels.", true);
-    return;
-  }
-
-  popup.document.write(`
-    <!DOCTYPE html>
-    <html>
-    <head>
-    <title>Print Barcode</title>
-    <style>
-      body { text-align: center; padding: 20px; }
-      img { max-width: 100%; width: 600px; }
-    </style>
-    </head>
-    <body>
-      <img src="${image}" onload="window.print()">
-    </body>
-    </html>
-  `);
-
-  popup.document.close();
-}
-
-function printModalBarcode() {
-  printBarcode(latestBarcode, latestName);
-}
-
 function printExistingBarcode() {
-  const product = productByBarcode(
-    $("barcodeSelect").value
-  );
-
-  if (!product) {
-    notify("Select a product first.", true);
-    return;
-  }
-
-  printBarcode(product.barcode, product.name);
+  const p=findProduct($("barcodeSelect").value);
+  if (!p) return notify("Select a product.",true);
+  printBarcode(p.barcode,p.name);
 }
-
-function closeModal() {
-  $("downloadModal").classList.remove("show");
-}
-
-// ========================================
-// ACTIVITY HISTORY
-// ========================================
-
 function filteredHistory() {
-  const search = $("historySearch")
-    .value.toLowerCase();
-
-  const action = $("historyFilter").value;
-
-  return history.filter(item => {
-    const matchesSearch =
-      item.name.toLowerCase().includes(search) ||
-      item.barcode.toLowerCase().includes(search);
-
-    const matchesAction =
-      !action || item.action === action;
-
-    return matchesSearch && matchesAction;
-  });
-}
-
-function renderHistory() {
-  const table = $("historyTable");
-  table.replaceChildren();
-
-  filteredHistory().forEach(item => {
-    const row = document.createElement("tr");
-
-    cell(row, item.time);
-    cell(row, item.name);
-    cell(row, item.action);
-
-    const sign = item.change > 0 ? "+" : "";
-    cell(row, sign + item.change);
-
-    cell(row, item.quantity);
-
-    table.appendChild(row);
-  });
-}
-
-function exportHistory() {
-  const rows = [
-    [
-      "Date",
-      "Barcode",
-      "Product",
-      "Action",
-      "Change",
-      "New Quantity"
-    ]
-  ];
-
-  filteredHistory().forEach(item => {
-    rows.push([
-      item.time,
-      item.barcode,
-      item.name,
-      item.action,
-      item.change,
-      item.quantity
-    ]);
-  });
-
-  function csvValue(value) {
-    let str = String(value);
-
-    // Keep exported values from becoming spreadsheet formulas.
-    if (/^[=+\-@\t\r]/.test(str)) {
-      str = "'" + str;
-    }
-
-    return '"' + str.replace(/"/g, '""') + '"';
-  }
-
-  const csv = rows.map(row =>
-    row.map(csvValue).join(",")
-  ).join("\r\n");
-
-  const blob = new Blob([csv], {
-    type: "text/csv;charset=utf-8"
-  });
-
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement("a");
-
-  link.href = url;
-  link.download = "StockRoom-Activity.csv";
-
-  document.body.appendChild(link);
-  link.click();
-  link.remove();
-
-  setTimeout(() => URL.revokeObjectURL(url), 1000);
-}
-
-// ========================================
-// ANALYTICS AND CHARTS
-// ========================================
-
-function renderAnalytics() {
-  const added = history
-    .filter(h => h.action === "ADD")
-    .reduce((sum, h) => sum + h.change, 0);
-
-  const removed = history
-    .filter(h => h.action === "REMOVE")
-    .reduce((sum, h) => sum + Math.abs(h.change), 0);
-
-  const categories = new Set(
-    products.map(p => p.category)
+  const q=$("historySearch").value.toLowerCase();
+  const action=$("historyFilter").value;
+  return history.filter(h =>
+    (!action||h.action===action) &&
+    (h.name.toLowerCase().includes(q)||h.barcode.toLowerCase().includes(q))
   );
-
-  $("addedTotal").textContent = added;
-  $("removedTotal").textContent = removed;
-  $("categoryCount").textContent = categories.size;
-  $("activityCount").textContent = history.length;
 }
-
+function renderHistory() {
+  $("historyTable").replaceChildren();
+  filteredHistory().forEach(h=>{
+    const row=document.createElement("tr");
+    [h.time,h.name,h.action,(h.change>0?"+":"")+h.change,h.quantity].forEach(v=>cell(row,v));
+    $("historyTable").appendChild(row);
+  });
+}
+function exportHistory() {
+  const rows=[["Date","Barcode","Product","Action","Change","New Quantity"]];
+  filteredHistory().forEach(h=>rows.push([h.time,h.barcode,h.name,h.action,h.change,h.quantity]));
+  const csv=rows.map(r=>r.map(v=>{
+    let s=String(v);
+    if (/^[=+\-@\t\r]/.test(s)) s="'"+s;
+    return '"'+s.replace(/"/g,'""')+'"';
+  }).join(",")).join("\r\n");
+  const url=URL.createObjectURL(new Blob([csv],{type:"text/csv"}));
+  const a=document.createElement("a");
+  a.href=url;a.download="StockRoom-History.csv";
+  a.click();
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+function renderAnalytics() {
+  $("addedTotal").textContent=history.filter(h=>h.action==="ADD").reduce((n,h)=>n+h.change,0);
+  $("removedTotal").textContent=history.filter(h=>h.action==="REMOVE").reduce((n,h)=>n+Math.abs(h.change),0);
+  $("categoryCount").textContent=new Set(products.map(p=>p.category)).size;
+  $("activityCount").textContent=history.length;
+}
 function renderCharts() {
-  if (typeof Chart === "undefined") {
-    notify("Chart library could not load.", true);
-    return;
-  }
-
+  if (!window.Chart) return notify("Chart library unavailable.",true);
   if (categoryChart) categoryChart.destroy();
   if (movementChart) movementChart.destroy();
-
-  // Inventory by category
-  const categoryTotals = {};
-
-  products.forEach(p => {
-    categoryTotals[p.category] =
-      (categoryTotals[p.category] || 0) + p.quantity;
+  const totals={};
+  products.forEach(p=>totals[p.category]=(totals[p.category]||0)+p.quantity);
+  categoryChart=new Chart($("categoryChart"),{
+    type:"doughnut",
+    data:{
+      labels:Object.keys(totals),
+      datasets:[{data:Object.values(totals),
+        backgroundColor:["#2563eb","#16a34a","#f59e0b","#8b5cf6","#ef4444","#06b6d4"]}]
+    },
+    options:{responsive:true,maintainAspectRatio:false}
   });
-
-  const names = Object.keys(categoryTotals);
-  const values = Object.values(categoryTotals);
-
-  categoryChart = new Chart(
-    $("categoryChart"),
-    {
-      type: "doughnut",
-      data: {
-        labels: names,
-        datasets: [{
-          data: values,
-          backgroundColor: [
-            "#2563eb",
-            "#16a34a",
-            "#f59e0b",
-            "#8b5cf6",
-            "#ef4444",
-            "#06b6d4",
-            "#64748b"
-          ]
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false
-      }
-    }
-  );
-
-  // Stock movement over the last 7 days
-  const dates = [];
-
-  for (let i = 6; i >= 0; i--) {
-    const d = new Date();
-    d.setHours(12, 0, 0, 0);
-    d.setDate(d.getDate() - i);
-
-    const key = [
-      d.getFullYear(),
-      String(d.getMonth() + 1).padStart(2, "0"),
-      String(d.getDate()).padStart(2, "0")
-    ].join("-");
-
-    dates.push(key);
+  const days=[];
+  for(let i=6;i>=0;i--){
+    const d=new Date();
+    d.setDate(d.getDate()-i);
+    days.push(
+      d.getFullYear()+"-"+
+      String(d.getMonth()+1).padStart(2,"0")+"-"+
+      String(d.getDate()).padStart(2,"0")
+    );
   }
-
-  const addedByDay = dates.map(date =>
-    history
-      .filter(h =>
-        h.date === date && h.action === "ADD"
-      )
-      .reduce((sum, h) => sum + h.change, 0)
-  );
-
-  const removedByDay = dates.map(date =>
-    history
-      .filter(h =>
-        h.date === date && h.action === "REMOVE"
-      )
-      .reduce(
-        (sum, h) => sum + Math.abs(h.change), 0
-      )
-  );
-
-  movementChart = new Chart(
-    $("movementChart"),
-    {
-      type: "bar",
-      data: {
-        labels: dates.map(d => d.slice(5)),
-        datasets: [
-          {
-            label: "Stock Added",
-            data: addedByDay,
-            backgroundColor: "#16a34a"
-          },
-          {
-            label: "Stock Removed",
-            data: removedByDay,
-            backgroundColor: "#dc2626"
-          }
-        ]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        scales: {
-          y: {
-            beginAtZero: true,
-            ticks: { precision: 0 }
-          }
-        }
-      }
-    }
-  );
+  const sum=(day,action)=>history.filter(h=>h.date===day&&h.action===action)
+    .reduce((n,h)=>n+Math.abs(h.change),0);
+  movementChart=new Chart($("movementChart"),{
+    type:"bar",
+    data:{labels:days.map(d=>d.slice(5)),datasets:[
+      {label:"Added",data:days.map(d=>sum(d,"ADD")),backgroundColor:"#16a34a"},
+      {label:"Removed",data:days.map(d=>sum(d,"REMOVE")),backgroundColor:"#dc2626"}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,scales:{y:{beginAtZero:true,ticks:{precision:0}}}}
+  });
 }
-
-// ========================================
-// SETTINGS
-// ========================================
-
 function savePreferences() {
-  const level = Number($("lowStockLevel").value);
-
-  if (!validQuantity(level)) {
-    notify("Invalid warning level.", true);
-    return;
-  }
-
-  lowLevel = level;
-  localStorage.setItem("stockroom_low", level);
-
+  const v=$("lowStockLevel").value;
+  if (!validQty(v)) return notify("Invalid warning level.",true);
+  lowLevel=Number(v);
+  localStorage.setItem("stockroom_low",lowLevel);
   renderAll();
-  notify("Preferences saved.");
 }
-
-// ========================================
-// RENDER ALL
-// ========================================
-
 function renderAll() {
   renderDashboard();
-  populateFilters();
+  populateSelects();
   renderInventory();
-  populateBarcodeSelect();
   renderHistory();
   renderAnalytics();
   renderBulkQueue();
   findScannedProduct();
-
-  if ($("analytics").classList.contains("active")) {
-    renderCharts();
-  }
+  if ($("analytics").classList.contains("active")) renderCharts();
 }
-
-// ========================================
-// START WEBSITE
-// ========================================
-
 renderAll();
-
-if (API) {
-  loadInventory();
-} else {
-  navigate("settings");
-}
+if (API) loadInventory();
+else navigate("settings");
 </script>
-
 </body>
 </html>
